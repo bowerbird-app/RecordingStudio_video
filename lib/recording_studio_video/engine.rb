@@ -95,6 +95,11 @@ module RecordingStudioVideo
     # Run after_initialize hooks
     initializer "recording_studio_video.after_initialize", after: "recording_studio_video.load_config" do |_app|
       RecordingStudioVideo.configuration.hooks.run(:after_initialize, self)
+      RecordingStudioVideo.register_integrations!
+    end
+
+    initializer "recording_studio_video.prepare" do
+      config.to_prepare { RecordingStudioVideo.register_integrations! }
     end
 
     # Apply model extensions when models are loaded
