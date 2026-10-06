@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
 module RecordingStudioVideo
-  # Unresolved accepts only its three catalog reasons. A resolved embed of any
-  # other content type comes back as NOT_VIDEO so callers can use one sentence.
   module Playback
     CONTENT_TYPE = :video
-    NOT_VIDEO = Object.new
-    private_constant :CONTENT_TYPE, :NOT_VIDEO
+
+    class NotVideo
+      def message
+        "Enter a supported video URL."
+      end
+    end
+    private_constant :CONTENT_TYPE, :NotVideo
 
     def self.accept(url)
       result = RecordingStudio::ExternalEmbed.resolve(url)
       return result if video?(result)
       return result if result.is_a?(RecordingStudio::ExternalEmbed::Unresolved)
 
-      NOT_VIDEO
+      NotVideo.new
     end
 
     def self.video?(result)

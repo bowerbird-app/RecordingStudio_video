@@ -10,8 +10,6 @@ module RecordingStudioVideo
 
     WRITABLE = %i[title url description].freeze
     DERIVED = %i[provider canonical_url content_type].freeze
-    NOT_VIDEO_MESSAGE = "Enter a supported video URL."
-    private_constant :NOT_VIDEO_MESSAGE
 
     recording_studio_recordable label: "Video",
                                 plural_label: "Videos",
@@ -69,9 +67,7 @@ module RecordingStudioVideo
     end
 
     def url_message(result)
-      return result.message if result.is_a?(RecordingStudio::ExternalEmbed::Unresolved)
-
-      NOT_VIDEO_MESSAGE
+      result.message
     end
   end
 

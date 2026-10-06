@@ -182,10 +182,9 @@ class RenameVerificationTest < Minitest::Test
   # Routes File Tests
   # ============================================================
 
-  def test_routes_references_correct_engine
-    content = read_routes_file
-    assert_match(/#{@pascal_name}::Engine\.routes\.draw/, content,
-                 "Routes should reference #{@pascal_name}::Engine")
+  def test_engine_ships_no_routes
+    path = File.join(@root, "config", "routes.rb")
+    refute File.exist?(path), "Host screens stay in the host. This engine draws no routes."
   end
 
   # ============================================================
@@ -432,9 +431,5 @@ class RenameVerificationTest < Minitest::Test
 
   def read_engine_file
     File.read(File.join(@root, "lib", @gem_name, "engine.rb"))
-  end
-
-  def read_routes_file
-    File.read(File.join(@root, "config", "routes.rb"))
   end
 end

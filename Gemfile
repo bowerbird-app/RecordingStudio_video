@@ -2,10 +2,8 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in recording_studio_video.gemspec
 gemspec
 
-# These gems are not published to RubyGems; resolve the gemspec pins from GitHub.
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.2.2"
 gem "recording_studio_external_embed", github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"
 gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.10.1"

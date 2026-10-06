@@ -5,14 +5,6 @@ require "rails/generators/active_record"
 
 module RecordingStudioVideo
   module Generators
-    # Generator to install RecordingStudioVideo migrations into the host application.
-    #
-    # Usage:
-    #   rails generate recording_studio_video:migrations
-    #
-    # Options:
-    #   --skip-existing  Skip migrations that already exist in the host app
-    #
     class MigrationsGenerator < Rails::Generators::Base
       include ActiveRecord::Generators::Migration
 
@@ -42,7 +34,6 @@ module RecordingStudioVideo
 
         migration_files.each do |source_path|
           filename = File.basename(source_path)
-          # Extract migration name without timestamp (e.g., "create_recording_studio_video_pages.rb")
           migration_name = filename.sub(/^\d+_/, "")
 
           if options[:skip_existing] && migration_exists?(migration_name)

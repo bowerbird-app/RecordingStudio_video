@@ -120,11 +120,15 @@ class VideoRecordableTest < ActiveSupport::TestCase
     end
 
     video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
+    html = nil
     RecordingStudio::ExternalEmbed.with_providers(provider) do
       refute video.valid?
+      html = VideoPlayerHelperTest::View.new.recording_studio_video_player(video)
     end
 
     assert_equal ["Enter a supported video URL."], video.errors[:url]
+    assert_equal "", html
+    assert_predicate html, :html_safe?
   end
 
   test "provider facts are derived and are not columns" do

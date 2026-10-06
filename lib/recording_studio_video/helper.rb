@@ -13,7 +13,10 @@ module RecordingStudioVideo
       video = video_subject(subject)
       return "".html_safe unless video
 
-      recording_studio_external_embed(Playback.accept(video.url))
+      result = Playback.accept(video.url)
+      return "".html_safe unless result.is_a?(RecordingStudio::ExternalEmbed::Embed)
+
+      recording_studio_external_embed(result)
     end
 
     def recording_studio_video_fields(video)

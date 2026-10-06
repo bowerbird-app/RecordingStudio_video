@@ -57,7 +57,6 @@ module RecordingStudioVideo
     end
 
     initializer "recording_studio_video.load_config" do |app|
-      # Load config/recording_studio_video.yml via Rails config_for if present
       if app.respond_to?(:config_for)
         begin
           yaml = begin
@@ -71,7 +70,6 @@ module RecordingStudioVideo
         end
       end
 
-      # Merge Rails.application.config.x.recording_studio_video if present
       if app.config.respond_to?(:x) && app.config.x.respond_to?(:recording_studio_video)
         xcfg = app.config.x.recording_studio_video
         if xcfg.respond_to?(:to_h)
