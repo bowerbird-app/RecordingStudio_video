@@ -1,172 +1,116 @@
-# GemTemplate
+# Recording Studio Video
 
-Internal template for building Rails engine addons on top of Recording Studio 4.x.
+Recording Studio Video stores one external video as a Recording Studio recordable. The row keeps a title, a URL, and a description. Playback and URL checks go through Recording Studio External Embed.
 
-## What's Included
+## What this gem does not do
 
-- **Recording Studio** 4.x gem pinned and configured
-- **Devise** authentication with a pre-seeded admin user
-- **Workspace**, **Folder**, and **Page** recordables seeded into the dummy host app
-- **FlatPack** UI component library for all views
-- **Dummy app** (`test/dummy/`) with a FlatPack sign-in screen, a home page on Recording Studio's default layout, mounted Recording Studio routes, and FlatPack's built-in rounded theme
+This gem does not upload video files. It does not transcode video. It does not parse provider URLs. It does not call the YouTube Data API.
 
-Authenticated dummy pages use Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
+Provider details stay on the embed returned by `RecordingStudio::ExternalEmbed.resolve`. They are not columns.
 
-## Quick Start
+## Install
 
-### Cursor Cloud Agent (Recommended)
-
-A Cloud Agent boots this repo into a ready-to-use dev environment with no manual steps. The setup lives in `.cursor/`:
-
-- `install.sh` provisions Ruby (pinned by `.ruby-version`), PostgreSQL 16, all gems, the seeded dummy database, and compiled CSS at build time, then fetches Recording Studio skills.
-- `start.sh` starts PostgreSQL on every boot.
-- `environment.json` runs the `rails-server` and `tailwind-watch` terminals and exposes port 3000.
-
-Open port 3000 and sign in at `/users/sign_in`. No environment variables are required — the dummy app's `database.yml` defaults match the provisioned PostgreSQL cluster.
-
-### GitHub Codespaces
-
-1. Click **Code** → **Codespaces** → **Create codespace**
-2. Wait for setup to complete
-3. Run:
-   ```bash
-   cd test/dummy
-   bin/rails db:setup
-   bin/dev
-   ```
-4. Open port 3000 — you'll land on the dummy app home page and can sign in at `/users/sign_in`
-
-The dummy app is intended as a host-app validation surface for authentication, FlatPack rendering, Tailwind source scanning, and Recording Studio route wiring.
-
-Dummy credentials (`test/dummy/config/credentials.yml.enc`) are encrypted with the shared RecordingStudio_* development master key. Set `RAILS_MASTER_KEY` or put that key in `test/dummy/config/master.key` (gitignored). Keep the encrypted file; do not generate a per-repo dummy key.
-
-### Login Credentials
-
-| Field    | Value             |
-|----------|-------------------|
-| Email    | admin@admin.com   |
-| Password | Password          |
-
-The login form is prefilled with these credentials for fast access.
-
-### Useful Routes
-
-- `/` — dummy app home page
-- `/users/sign_in` — Devise sign-in page
-- `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
-- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages
-
-The home page in `test/dummy/app/views/home/index.html.erb` is a starting point for a minimal demo of the gem's primary behavior. Keep deeper explanations on the dummy docs pages, not in this README.
-
-## Architecture
-
-### Root Recording Pattern
-
-This template follows Recording Studio's root recording pattern:
-
-- **Workspace** is the top-level recordable
-- **Folder** and **Page** demonstrate nested recordables under the workspace root
-- Each configured recordable declares `recording_studio_recordable(...)`; strict declaration validation stays enabled
-- A root `RecordingStudio::Recording` wraps the Workspace
-- `Current.actor` is set from `current_user` (Devise) in `ApplicationController`
-
-### Extending Recording Studio
-
-To add new recordable types:
-
-1. Create your model (e.g., `Page`, `Comment`)
-2. Register it in `config/initializers/recording_studio.rb`:
-   ```ruby
-   RecordingStudio.configure do |config|
-     config.recordable_types = ["Workspace", "YourNewType"]
-   end
-   ```
-3. Declare whether the model can be a root and which parents may contain it:
-   ```ruby
-   class YourNewType < ApplicationRecord
-     recording_studio_recordable label: "Your new type",
-                                 root: false,
-                                 allowed_parent_types: ["Workspace", "Folder"]
-   end
-   ```
-4. Validate declarations and create recordings under the root:
-   ```ruby
-   RecordingStudio.validate_recordable_declarations!
-   root_recording = RecordingStudio.root_recording_for(workspace)
-   root_recording.record(YourNewType) do |record|
-     record.title = "Example"
-   end
-   ```
-
-### Recordable Declarations
-
-Every configured ActiveRecord recordable type must declare its hierarchy rules. Declarations are required; they are not version-specific.
-
-- `Workspace` declares `root: true`
-- `Folder` and `Page` declare `root: false, allowed_parent_types: ["Workspace", "Folder"]`
-- `config.require_recordable_declarations = true` remains enabled in the dummy app initializer
-
-Useful console checks:
+Add the gem next to Recording Studio, External Embed, and Flatpack.
 
 ```ruby
-RecordingStudio.validate_recordable_declarations!
-RecordingStudio.root_recordable_types
-RecordingStudio.allowed_parent_types_for("Page")
+gem "recording_studio", "~> 4.2"
+gem "recording_studio_external_embed", "~> 0.1.1"
+gem "flat_pack", ">= 0.1.135"
+gem "recording_studio_video", "~> 0.1.0"
 ```
 
-### Capabilities
+This repository pins GitHub tags `v4.2.2`, `v0.1.3`, and `v0.1.198` for Recording Studio, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time.
 
-Capability mixins are opt-in. Installing this gem does not enable mixins on host types.
+Then install the config and the table.
 
-The dummy Workspace enables Accessible because that addon is bundled:
+```bash
+bin/rails generate recording_studio_video:install
+bin/rails generate recording_studio_video:migrations
+bin/rails db:migrate
+```
+
+Add the type and keep declaration checks on.
 
 ```ruby
-RecordingStudio.enable_capability(:accessible, on: Workspace)
+RecordingStudio.configure do |config|
+  config.recordable_types = ["Workspace", "RecordingStudioVideo::Video"]
+  config.require_recordable_declarations = true
+end
 ```
 
-The template also ships one example mixin that uses core 4.2.0's `include_for` factory:
+The install generator does not mount a route. The host owns the form, the routes, and the buttons.
+
+## External Embed
+
+Validation and the player both resolve the stored URL with `RecordingStudio::ExternalEmbed.resolve`. A stored URL is valid when that resolution returns an embed whose content type is video. That resolution is the only provider check in this gem.
+
+The shipped External Embed catalog is YouTube only. When External Embed adds another video provider, this gem keeps the same `url` column. No migration is required.
+
+## Fields
+
+`RecordingStudioVideo::Video::WRITABLE` is `title`, `url`, and `description`.
+
+Blank title and description are stored as nil. The URL is stripped and kept as entered. The gem does not copy the embed title, description, canonical URL, or embed URL onto the row.
+
+`provider`, `canonical_url`, and `content_type` are derived readers. They return strings or nil. They are not columns.
+
+The form param key is `video`, from `model_name` `Video`. The Recording Studio type string stays `RecordingStudioVideo::Video`.
+
+## Create a video
+
+`record` defaults the parent to the root. Pass `parent_recording:` when the video should sit under that root.
 
 ```ruby
-include RecordingStudio::Capabilities::Example.to(label: "dummy workspace")
+root.record(RecordingStudioVideo::Video, parent_recording: root) do |video|
+  video.title = "Me at the zoo"
+  video.url = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+  video.description = "The first video uploaded to YouTube."
+end
 ```
 
-`.to` wraps `RecordingStudio::Capabilities.include_for`. It does not add a fourth verb and it does not call `enable_capability` / `set_capability_options` itself. Folder and Page stay without the example mixin.
+A saved video is immutable. Change it with `revise`.
 
-Use core `RecordingStudio::Hooks` and `RecordingStudio::Services::BaseService`. Do not copy those classes into a new addon.
+```ruby
+root.revise(recording) do |video|
+  video.description = "Updated description."
+end
+```
 
-### FlatPack UI Components
+`root.videos` returns child recordings of type `RecordingStudioVideo::Video`, ordered by `created_at`.
 
-All views use FlatPack ViewComponents. Available components include:
+## Mount videos on a parent
 
-- `FlatPack::Button::Component` — Buttons (`:primary`, `:secondary`, `:ghost`)
-- `FlatPack::Card::Component` — Cards (`:default`, `:elevated`, `:outlined`)
-- `FlatPack::Alert::Component` — Alerts (`:success`, `:error`, `:warning`, `:info`)
-- `FlatPack::Badge::Component` — Status badges
-- `FlatPack::Table::Component` — Data tables
-- `FlatPack::TextInput::Component`, `EmailInput`, `PasswordInput` — Form inputs
-- `FlatPack::PageNav::Component` — Default-layout page navigation
-- `FlatPack::PageTitle::Component` — Page titles
+Include the capability on the parent model. Workspace is the usual parent. There is no parent-type list to configure.
 
-Use the live FlatPack demo app at [flatpack.bowerbird.io](https://flatpack.bowerbird.io/) as the approved UI reference for current shared patterns. Its component table is the fastest way to discover available FlatPack components before introducing new custom UI.
+```ruby
+class Workspace < ApplicationRecord
+  recording_studio_recordable label: "Workspace", root: true
+  include RecordingStudio::Capabilities::Videos.to
+end
+```
 
-See the [FlatPack README](https://github.com/bowerbird-app/flatpack) for full documentation.
+`Videos.to` takes no arguments. A type that does not include it cannot record a video.
 
-## Tech Stack
+## Helpers
 
-| Component       | Version |
-|-----------------|---------|
-| Ruby            | 3.3+    |
-| Rails           | 8.1+    |
-| PostgreSQL      | 16      |
-| TailwindCSS     | 4       |
-| RecordingStudio | 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.2`) |
-| Accessible      | dummy GitHub tag `v0.10.1` |
-| Root Switchable | dummy GitHub tag `v0.5.1` |
-| FlatPack        | dummy GitHub tag `v0.1.196` |
-| Devise          | latest  |
+The engine includes two helpers into Action Controller, the same way External Embed includes `recording_studio_external_embed`.
 
-The dummy Gemfile keeps `github:` sources so Bundler can fetch those gems. The gemspec still pins `recording_studio` to `~> 4.2` so copied addons declare the core dependency even when GitHub is the fetch source.
+`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. This helper does not render the player.
 
-## Documentation
+`recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 
-The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions; this README and the dummy app are the source of truth for the Recording Studio addon workflow.
+Put the player under the fields when `video.content_type` is `"video"`.
+
+## Validation
+
+`url` is required.
+
+| Case | `errors[:url]` |
+| --- | --- |
+| Blank | `can't be blank` |
+| Unsupported host | `That URL is not from a supported provider.` |
+| Malformed id | `That URL is missing a valid id.` |
+| URL that cannot be embedded | `That URL can't be embedded.` |
+| Resolved embed that is not a video | `Enter a supported video URL.` |
+
+Those provider messages come from External Embed. This gem does not keep a provider regex.

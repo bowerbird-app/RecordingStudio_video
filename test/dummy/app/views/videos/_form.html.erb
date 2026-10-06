@@ -1,0 +1,11 @@
+<%= form_with url: @form_url, method: @form_method, scope: :video do %>
+  <%= hidden_field_tag :workspace_id, @workspace_id %>
+  <%= recording_studio_video_fields(@video) %>
+  <% if @video.content_type == "video" %>
+    <%= recording_studio_video_player(@video) %>
+  <% end %>
+  <div class="mt-4 flex justify-start gap-3">
+    <%= render FlatPack::Button::Component.new(text: "Save", type: "submit", style: :primary, size: :md) %>
+    <%= render FlatPack::Button::Component.new(text: "Cancel", href: videos_path, style: :ghost, size: :md) %>
+  </div>
+<% end %>
