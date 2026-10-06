@@ -29,6 +29,7 @@ class VideosTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "video[title]"
     assert_includes response.body, "video[url]"
     assert_includes response.body, "video[description]"
+    assert_includes response.body, "flex flex-col gap-4"
     assert_includes response.body, "Cancel"
     assert_includes response.body, "Save"
 

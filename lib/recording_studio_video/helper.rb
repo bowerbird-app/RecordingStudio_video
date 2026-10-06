@@ -20,7 +20,8 @@ module RecordingStudioVideo
     end
 
     def recording_studio_video_fields(video)
-      safe_join(Video::WRITABLE.map { |name| video_field(video, name) })
+      render "recording_studio_video/fields",
+             fields: safe_join(Video::WRITABLE.map { |name| video_field(video, name) })
     end
 
     private

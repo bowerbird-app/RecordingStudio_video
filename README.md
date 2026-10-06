@@ -95,7 +95,7 @@ end
 
 The engine includes two helpers into Action Controller, the same way External Embed includes `recording_studio_external_embed`.
 
-`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. This helper does not render the player.
+`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. This helper does not render the player.
 
 `recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 
