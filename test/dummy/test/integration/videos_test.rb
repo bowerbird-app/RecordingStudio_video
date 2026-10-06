@@ -32,6 +32,7 @@ class VideosTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "flex flex-col gap-4"
     assert_includes response.body, "Cancel"
     assert_includes response.body, "Save"
+    assert_operator response.body.index(">Save<"), :<, response.body.index(">Cancel<")
 
     post videos_path, params: {
       workspace_id: @root.id,
