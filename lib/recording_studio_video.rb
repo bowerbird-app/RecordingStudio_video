@@ -10,6 +10,7 @@ require "recording_studio_video/capabilities/example"
 require "recording_studio/capabilities/videos"
 require "recording_studio_video/playback"
 require "recording_studio_video/api"
+require "recording_studio_video/helper"
 
 module RecordingStudioVideo
   FIELDS = {

@@ -7,25 +7,16 @@ module RecordingStudioVideo
     class InstallGenerator < Rails::Generators::Base
       source_root File.expand_path("templates", __dir__)
 
-      desc "Installs RecordingStudioVideo engine into your application"
-
-      class_option(
-        :mount_path,
-        type: :string,
-        default: "/recording_studio_video",
-        desc: "Route prefix used when mounting the engine"
-      )
-
-      def mount_engine
-        route %(mount RecordingStudioVideo::Engine, at: "#{options[:mount_path]}")
-      end
+      desc "Installs RecordingStudioVideo into your application"
 
       def copy_initializer
         template "recording_studio_video_initializer.rb", "config/initializers/recording_studio_video.rb"
       end
 
       def add_yaml_config
-        return unless yes?("Would you like to add `config/recording_studio_video.yml` for environment-specific settings? [y/N]")
+        prompt = "Would you like to add `config/recording_studio_video.yml` " \
+                 "for environment-specific settings? [y/N]"
+        return unless yes?(prompt)
 
         template "recording_studio_video.yml", "config/recording_studio_video.yml"
       end
@@ -96,7 +87,8 @@ module RecordingStudioVideo
       def tailwind_source_lines
         [
           '@source "../../vendor/bundle/**/recording_studio_video/app/views/**/*.erb";',
-          '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/recording_studio_video-*/app/views/**/*.erb";',
+          "@source \"../../../../../../usr/local/bundle/ruby/**/bundler/gems/" \
+          "recording_studio_video-*/app/views/**/*.erb\";",
           '@source "../../vendor/bundle/**/flatpack/app/components/**/*.{rb,erb}";',
           '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/flatpack-*/app/components/**/*.{rb,erb}";'
         ]

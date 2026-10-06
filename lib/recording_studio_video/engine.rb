@@ -102,6 +102,12 @@ module RecordingStudioVideo
       config.to_prepare { RecordingStudioVideo.register_integrations! }
     end
 
+    initializer "recording_studio_video.helper" do
+      ActiveSupport.on_load(:action_controller_base) do
+        helper RecordingStudioVideo::Helper
+      end
+    end
+
     # Apply model extensions when models are loaded
     initializer "recording_studio_video.apply_model_extensions" do
       config.to_prepare do

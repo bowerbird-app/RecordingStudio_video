@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 RecordingStudioVideo::Engine.routes.draw do
-  root "home#index"
+  # Video screens belong to the host. This engine ships no routes.
 end

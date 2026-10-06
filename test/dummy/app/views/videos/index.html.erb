@@ -1,0 +1,46 @@
+<% dummy_page_nav(title: "Videos") %>
+
+<div class="flex w-full flex-col gap-8">
+  <% if @roots.empty? %>
+    <%= render FlatPack::PageTitle::Component.new(title: "Videos", subtitle: "No workspace yet.", variant: :h1) %>
+  <% else %>
+    <% @roots.each do |root| %>
+      <% workspace = root.recordable %>
+      <section class="flex flex-col gap-4">
+        <%= render FlatPack::PageTitle::Component.new(
+          title: workspace.name,
+          subtitle: "Videos",
+          variant: :h2
+        ) %>
+
+        <%= render FlatPack::Button::Component.new(
+          text: "New video",
+          href: new_video_path(workspace_id: root.id),
+          style: :primary,
+          size: :md
+        ) %>
+
+        <% videos = root.videos.to_a %>
+        <% if videos.empty? %>
+          <p>No videos yet.</p>
+        <% else %>
+          <% videos.each do |recording| %>
+            <% video = recording.recordable %>
+            <%= render FlatPack::PageTitle::Component.new(
+              title: video.title.presence || "Untitled video",
+              subtitle: video.description,
+              variant: :h3
+            ) %>
+            <%= recording_studio_video_player(recording) %>
+            <%= render FlatPack::Button::Component.new(
+              text: "Edit",
+              href: edit_video_path(recording),
+              style: :ghost,
+              size: :md
+            ) %>
+          <% end %>
+        <% end %>
+      </section>
+    <% end %>
+  <% end %>
+</div>

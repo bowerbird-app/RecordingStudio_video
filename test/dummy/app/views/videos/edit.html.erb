@@ -1,0 +1,6 @@
+<% dummy_page_nav(title: "Edit video", back_url: videos_path, back_label: "Videos") %>
+
+<div class="flex w-full flex-col gap-6">
+  <%= render FlatPack::PageTitle::Component.new(title: "Edit video", variant: :h1) %>
+  <%= render "form" %>
+</div>

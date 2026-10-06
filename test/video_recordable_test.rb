@@ -173,3 +173,42 @@ class VideoRecordableTest < ActiveSupport::TestCase
     "#{prefix} #{SecureRandom.hex(4)}"
   end
 end
+
+class VideoPlayerHelperTest < Minitest::Test
+  YOUTUBE_URL = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+
+  class View
+    include RecordingStudio::ExternalEmbed::Helper
+    include RecordingStudioVideo::Helper
+  end
+
+  def setup
+    @view = View.new
+  end
+
+  def test_player_renders_the_external_embed_wrapper_for_a_video_and_stays_empty_for_a_bad_url
+    video = RecordingStudioVideo::Video.new(url: YOUTUBE_URL, title: "Me at the zoo")
+    html = @view.recording_studio_video_player(video)
+
+    assert_includes html, "recording-studio-external-embed"
+    refute_includes html, "Me at the zoo"
+
+    empty = @view.recording_studio_video_player(RecordingStudioVideo::Video.new(url: "https://vimeo.com/123"))
+    assert_equal "", empty
+    assert_predicate empty, :html_safe?
+
+    recording = RecordingStudio::Recording.new
+    recording.define_singleton_method(:recordable) { video }
+    assert_includes @view.recording_studio_video_player(recording), "recording-studio-external-embed"
+    assert_equal "", @view.recording_studio_video_player(Object.new)
+  end
+
+  def test_player_helper_has_no_provider_specific_branch
+    source = File.read(File.expand_path("../lib/recording_studio_video/helper.rb", __dir__))
+
+    refute_includes source, "youtube"
+    refute_includes source, "vimeo"
+    refute_includes source, "iframe"
+    refute_includes source, "content_type"
+  end
+end

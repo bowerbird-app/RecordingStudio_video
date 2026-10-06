@@ -26,15 +26,13 @@ class InstallGeneratorTest < Minitest::Test
     )
   end
 
-  def test_mount_engine_uses_configured_mount_path
-    generator = build_generator("/tmp", mount_path: "/addons/recording")
-    routes = []
+  def test_install_generator_does_not_mount_a_route
+    generator_path = "../lib/generators/recording_studio_video/install/install_generator.rb"
+    source = File.read(File.expand_path(generator_path, __dir__))
 
-    generator.stub(:route, ->(value) { routes << value }) do
-      generator.mount_engine
-    end
-
-    assert_equal ["mount RecordingStudioVideo::Engine, at: \"/addons/recording\""], routes
+    refute_includes RecordingStudioVideo::Generators::InstallGenerator.public_instance_methods(false), :mount_engine
+    refute_includes source, "mount RecordingStudioVideo::Engine"
+    refute_includes source, "mount_path"
   end
 
   def test_add_tailwind_source_injects_engine_and_flatpack_sources
@@ -140,8 +138,10 @@ class InstallGeneratorTest < Minitest::Test
 
     assert_includes install_guide, "bin/rails generate recording_studio_video:migrations"
     assert_includes install_guide, "bin/rails db:migrate"
-    assert_includes install_guide, "auth, layout, and current actor integration"
-    assert_includes install_guide, "recording_studio_recordable"
+    assert_includes install_guide, "RecordingStudioVideo::Video"
+    assert_includes install_guide, "Videos.to"
+    refute_includes install_guide, "allowed_parent_types"
+    refute_includes install_guide, "mount RecordingStudioVideo"
     refute_includes install_guide, "RecordingStudio v3"
   end
 

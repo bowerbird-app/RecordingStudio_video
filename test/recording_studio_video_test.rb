@@ -178,36 +178,35 @@ class RecordingStudioVideoTest < Minitest::Test
     refute_includes readme_source, "flat_pack_sidebar"
   end
 
-  def test_product_readme_is_the_template_guide
+  def test_product_readme_documents_video_without_pointing_at_the_template_guide
     readme = File.read(File.expand_path("../README.md", __dir__))
 
-    assert_includes readme, "RecordingStudio"
-    assert_includes readme, "dummy GitHub tag `v4.2.2`"
-    assert_includes readme, "dummy GitHub tag `v0.1.196`"
-    assert_includes readme, "dummy GitHub tag `v0.10.1`"
-    assert_includes readme, "dummy GitHub tag `v0.5.1`"
-    refute_includes readme, "dummy GitHub tag `v4.2.1`"
-    refute_includes readme, "dummy GitHub tag `v4.2.0`"
-    refute_includes readme, "v0.1.177"
-    refute_includes readme, "v0.9.1"
-    refute_includes readme, "v0.5.0"
-    refute_includes readme, "v0.1.133"
+    assert_includes readme, "recording_studio_video_fields"
+    assert_includes readme, "recording_studio_video_player"
+    assert_includes readme, "Videos.to"
+    assert_includes readme, "parent_recording:"
+    assert_includes readme, "Enter a supported video URL."
+    assert_includes readme, "RecordingStudioVideo::Video"
+    refute_includes readme, "docs/gem_template"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
     refute_includes readme, "recording_studio/v3.0.0"
   end
 
-  def test_dummy_home_page_uses_demo_title_only
-    view_path = File.expand_path("dummy/app/views/home/index.html.erb", __dir__)
-    view_source = File.read(view_path)
+  def test_dummy_home_page_lists_videos_for_a_workspace
+    view_source = File.read(File.expand_path("dummy/app/views/videos/index.html.erb", __dir__))
+    form_source = File.read(File.expand_path("dummy/app/views/videos/_form.html.erb", __dir__))
 
-    assert_includes view_source, 'title: "Template Demo"'
-    assert_includes view_source, 'subtitle: "This dummy app is the browser-facing demo surface for the template."'
-    assert_includes view_source, "FlatPack::Card::Component"
     assert_includes view_source, "dummy_page_nav"
-    refute_includes view_source, 'title: "Demo"'
-    refute_includes view_source, "FlatPack::Breadcrumb::Component"
+    assert_includes view_source, "recording_studio_video_player"
+    assert_includes view_source, "FlatPack::Button::Component"
+    assert_includes form_source, "recording_studio_video_fields"
+    assert_includes form_source, 'text: "Cancel"'
+    assert_includes form_source, 'text: "Save"'
+    refute_includes view_source, "Template Demo"
+    refute_includes view_source, "recordable type"
+    refute_includes form_source, "recordable type"
   end
 
   def test_dummy_docs_pages_use_minimal_flatpack_documentation_components
