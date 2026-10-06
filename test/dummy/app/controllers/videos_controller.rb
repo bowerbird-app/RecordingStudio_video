@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VideosController < ApplicationController
   def index
     @roots = Workspace.order(:name).map { |workspace| RecordingStudio.root_recording_for(workspace) }

@@ -19,7 +19,7 @@ gem "flat_pack", ">= 0.1.135"
 gem "recording_studio_video", "~> 0.1.0"
 ```
 
-This repository pins GitHub tags `v4.2.2`, `v0.1.3`, and `v0.1.198` for those three dependencies. Do not add `recording_studio_youtube` or `recording_studio_api`. API registration is a no-op unless `RecordingStudioApi` is already loaded.
+This repository pins GitHub tags `v4.2.2`, `v0.1.3`, and `v0.1.198` for Recording Studio, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time.
 
 Then install the config and the table.
 
@@ -42,7 +42,7 @@ The install generator does not mount a route. The host owns the form, the routes
 
 ## External Embed
 
-`RecordingStudioVideo::Playback.accept` is the only call to `RecordingStudio::ExternalEmbed.resolve`. A stored URL is valid when that call returns an embed whose content type is video.
+Validation and the player both resolve the stored URL with `RecordingStudio::ExternalEmbed.resolve`. A stored URL is valid when that resolution returns an embed whose content type is video. That resolution is the only provider check in this gem.
 
 The shipped External Embed catalog is YouTube only. When External Embed adds another video provider, this gem keeps the same `url` column. No migration is required.
 
@@ -97,7 +97,7 @@ The engine includes two helpers into Action Controller, the same way External Em
 
 `recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. This helper does not render the player.
 
-`recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It passes `Playback.accept` to `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
+`recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 
 Put the player under the fields when `video.content_type` is `"video"`.
 

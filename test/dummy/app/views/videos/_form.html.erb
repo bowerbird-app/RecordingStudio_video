@@ -4,7 +4,7 @@
   <% if @video.content_type == "video" %>
     <%= recording_studio_video_player(@video) %>
   <% end %>
-  <div class="mt-4 flex flex-wrap gap-3">
+  <div class="mt-4 flex justify-end gap-3">
     <%= render FlatPack::Button::Component.new(text: "Cancel", href: videos_path, style: :ghost, size: :md) %>
     <%= render FlatPack::Button::Component.new(text: "Save", type: "submit", style: :primary, size: :md) %>
   </div>
