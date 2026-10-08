@@ -49,8 +49,8 @@ class RecordingStudioVideoTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.2"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.3.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.3.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.10.1"'
@@ -58,6 +58,7 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
     refute_includes gemfile, "recording_studio/v3.0.0"
+    refute_includes gemfile, 'tag: "v4.2.2"'
     refute_includes gemfile, 'tag: "v4.2.1"'
     refute_includes gemfile, 'tag: "v4.2.0"'
     refute_includes gemfile, 'tag: "v0.9.1"'
