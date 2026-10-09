@@ -91,7 +91,12 @@ class RecordingStudioVideoTest < Minitest::Test
     )
     assert_includes invitation_migration, "create_table :recording_studio_access_invitations"
     assert_includes schema, 't.string "role", default: "view", null: false'
-    role_migration = Dir.glob(File.expand_path("dummy/db/migrate/*_change_recording_studio_accesses_role_to_string.rb", __dir__)).first
+    role_migration = Dir.glob(
+      File.expand_path(
+        "dummy/db/migrate/*_change_recording_studio_accesses_role_to_string.rb",
+        __dir__
+      )
+    ).first
     assert role_migration, "expected accessible role-to-string migration in dummy"
     assert_includes File.read(role_migration), "change_column :recording_studio_accesses, :role, :string"
   end
