@@ -53,7 +53,7 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.4.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.10.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.13.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.1"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
@@ -90,6 +90,10 @@ class RecordingStudioVideoTest < Minitest::Test
       )
     )
     assert_includes invitation_migration, "create_table :recording_studio_access_invitations"
+    assert_includes schema, 't.string "role", default: "view", null: false'
+    role_migration = Dir.glob(File.expand_path("dummy/db/migrate/*_change_recording_studio_accesses_role_to_string.rb", __dir__)).first
+    assert role_migration, "expected accessible role-to-string migration in dummy"
+    assert_includes File.read(role_migration), "change_column :recording_studio_accesses, :role, :string"
   end
 
   def test_template_does_not_ship_copied_core_hooks_or_base_service
