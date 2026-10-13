@@ -39,8 +39,8 @@ module RecordingStudioVideo
       render FIELD_COMPONENTS.fetch(spec.fetch(:input)).constantize.new(
         name: "#{video.model_name.param_key}[#{name}]",
         value: video.public_send(name),
-        label: Copy.field_label(name, default: spec.fetch(:label)),
-        help_text: Copy.field_hint(name, default: spec[:hint]),
+        label: Copy.field_label(name),
+        help_text: (Copy.field_hint(name) if spec.key?(:hint)),
         error: video_field_error(video, name)
       )
     end

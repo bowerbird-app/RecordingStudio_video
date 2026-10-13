@@ -62,12 +62,26 @@ class LocalesTest < Minitest::Test
     end
   end
 
-  def test_english_video_keys_resolve_without_missing_translations
+  def test_lib_copy_and_helper_do_not_pass_english_default
+    paths = [
+      File.expand_path("../lib/recording_studio_video/copy.rb", __dir__),
+      File.expand_path("../lib/recording_studio_video/helper.rb", __dir__)
+    ]
+
+    paths.each do |path|
+      code = File.read(path).lines.reject { |line| line.match?(/^\s*#/) }.join
+
+      refute_includes code, "default:",
+                      "#{path} must not pass English default: to t() or Copy helpers"
+    end
+  end
+
+  def test_english_video_keys_resolve_from_en_yml_without_default
     I18n.with_locale(:en) do
       EXPECTED.each do |key, english|
         assert_equal english, I18n.t("recording_studio.video.#{key}", raise: true),
                      "expected #{key} to resolve to #{english.inspect}"
-        assert_equal english, Copy.t(key, default: english),
+        assert_equal english, Copy.t(key),
                      "expected Copy.t(#{key.inspect}) to resolve to #{english.inspect}"
       end
     end
@@ -87,16 +101,11 @@ class LocalesTest < Minitest::Test
     end
   end
 
-  def test_copy_t_default_english_wins_when_key_missing_in_locale
+  def test_missing_key_raises_like_main_when_raise_on_missing
     I18n.with_locale(:en) do
-      assert_equal(
-        "Video URL",
-        Copy.t("fields.url.label", default: "Video URL")
-      )
-      assert_equal(
-        "Fallback label",
-        Copy.t("fields.missing_wave2_key", default: "Fallback label")
-      )
+      assert_raises(I18n::MissingTranslationData) do
+        Copy.t("fields.missing_wave2_key", raise: true)
+      end
     end
   end
 

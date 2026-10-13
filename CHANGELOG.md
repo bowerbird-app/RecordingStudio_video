@@ -6,7 +6,7 @@
 
 ### Added
 
-- English Rails I18n keys for non-view copy under `recording_studio.video` (field labels, URL hint, and the gem's own "Enter a supported video URL." validation message) resolve through `Copy` with English `default:` so a host locale without a fallback never shows "translation missing".
+- English Rails I18n keys for non-view copy under `recording_studio.video` (field labels, URL hint, and the gem's own "Enter a supported video URL." validation message) resolve through `Copy` from `config/locales/en.yml` only. Call sites do not pass English `default:`; a missing key behaves like main (translation missing / raise-on-missing).
 - Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded via `I18n.backend.load_translations` (no `I18n.load_path` mutation) plus a real-page assert.
 - Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_video_host.en.yml` for the rarely shown `errors.enter_supported_video_url` key, with a render assert on the video form error state.
 - Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
@@ -20,8 +20,8 @@
 ### Upgrade notes
 
 - Bump to `0.2.0`. No migration.
-- English hosts need no change. Copy `recording_studio.video.*` keys into host locale files when translating.
-- Hosts override by defining the same nested keys in their own `config/locales`.
+- English hosts need no change; English comes from the gem's `config/locales/en.yml`.
+- Hosts override by defining the same nested keys in their own `config/locales`. Missing keys are not masked with English `default:`.
 - Recordable labels (`Video` / `Videos`), generator CLI text, developer `ArgumentError`s, ActiveModel presence (`can't be blank`), and External Embed provider messages stay untranslated in this gem.
 
 ## 0.1.0 - 2026-10-06

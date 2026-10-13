@@ -3,9 +3,10 @@
 require "i18n"
 
 module RecordingStudioVideo
-  # Rails I18n lookups for Video user-facing copy. Every call passes
-  # `default:` English so a host locale without a fallback never shows
-  # "translation missing". Keys live under `recording_studio.video.*`.
+  # Rails I18n lookups for Video user-facing copy. English ships only in
+  # `config/locales/en.yml` under `recording_studio.video.*`. Call sites do
+  # not pass English `default:` — a missing key behaves like main
+  # (translation missing / raise-on-missing).
   #
   # Lib/playback keeps main's English literals. The helper maps known
   # English strings to locale keys at render.
@@ -32,17 +33,15 @@ module RecordingStudioVideo
 
       english = message.to_s
       key = USER_MESSAGE_KEYS[english]
-      key ? t(key, default: english) : english
+      key ? t(key) : english
     end
 
-    def field_label(name, default:)
-      t("fields.#{name}.label", default: default)
+    def field_label(name)
+      t("fields.#{name}.label")
     end
 
-    def field_hint(name, default:)
-      return if default.nil?
-
-      t("fields.#{name}.hint", default: default)
+    def field_hint(name)
+      t("fields.#{name}.hint")
     end
   end
 end

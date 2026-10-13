@@ -95,7 +95,7 @@ end
 
 The engine includes two helpers into Action Controller, the same way External Embed includes `recording_studio_external_embed`.
 
-`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. Field labels, the URL hint, and this gem's own not-video URL message resolve through `recording_studio.video.*` at render (`Copy`), with English `default:` on every lookup. Hosts override by defining the same keys in their own `config/locales`. External Embed provider messages pass through unchanged. This helper does not render the player.
+`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]`. Field labels, the URL hint, and this gem's own not-video URL message resolve through `recording_studio.video.*` at render (`Copy`); English comes from `config/locales/en.yml` only (no English `default:`). Hosts override by defining the same keys in their own `config/locales`. External Embed provider messages pass through unchanged. This helper does not render the player.
 
 `recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 
