@@ -9,3 +9,5 @@ en:
           hint: "Paste a link to a supported video, such as YouTube."
         description:
           label: "Description"
+      probes:
+        boot_mark: "video-boot-probe"

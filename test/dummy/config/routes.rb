@@ -25,5 +25,7 @@ Rails.application.routes.draw do
   get "docs/methods", to: "docs#methods", as: :docs_methods
 
   resources :videos, only: %i[index new create edit update]
+  get "video_i18n_probe", to: "video_i18n_probes#show", as: :video_i18n_probe
   root "videos#index"
 end
+

@@ -5,5 +5,10 @@ en:
   recording_studio:
     video:
       fields:
+        title:
+          label: "HOST Title"
         url:
           label: "HOST Video URL"
+          hint: "HOST Paste a link to a supported video, such as YouTube."
+        description:
+          label: "HOST Description"

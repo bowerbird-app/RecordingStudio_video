@@ -27,6 +27,10 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Description"
     assert_includes response.body, "Paste a link to a supported video, such as YouTube."
     refute_includes response.body, "HOST Video URL"
+    refute_includes response.body, "HOST Title"
+    refute_includes response.body, "HOST Description"
+    refute_includes response.body, "HOST Paste a link to a supported video, such as YouTube."
+    refute_includes response.body, "HOST boot override seen"
   end
 
   test "unsupported provider error stays external embed english on the form" do

@@ -7,7 +7,8 @@
 ### Added
 
 - English Rails I18n keys for non-view field labels and the URL hint under `recording_studio.video` resolve through `Copy` from `config/locales/en.yml` only. Call sites do not pass English `default:`; a missing key behaves like main (translation missing / raise-on-missing).
-- Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded onto a fresh `I18n::Backend::Simple` via public `load_translations` (no `I18n.load_path` mutation) plus a real-page assert.
+- Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded onto a fresh `I18n::Backend::Simple` via public `load_translations` (no `I18n.load_path` mutation) covering title, URL label, URL hint, and description on a real page.
+- Boot-order host override: always-loaded dummy `config/locales/recording_studio_video_boot_override.en.yml` on rarely shown `probes.boot_mark`, asserted via test-only `/video_i18n_probe` (normal `/videos` UI stays gem English).
 - Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
 - Render-level asserts for Title / Video URL / Description labels, the URL hint, and URL errors (main English).
 
@@ -47,4 +48,4 @@ A host that has never installed this gem should do the following.
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
 [Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.0...v0.2.0
+[0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0

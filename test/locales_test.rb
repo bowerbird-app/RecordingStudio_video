@@ -10,7 +10,8 @@ class LocalesTest < Minitest::Test
     "fields.title.label" => "Title",
     "fields.url.label" => "Video URL",
     "fields.url.hint" => "Paste a link to a supported video, such as YouTube.",
-    "fields.description.label" => "Description"
+    "fields.description.label" => "Description",
+    "probes.boot_mark" => "video-boot-probe"
   }.freeze
 
   def setup
