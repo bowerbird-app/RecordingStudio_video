@@ -8,7 +8,7 @@
 
 - English key `recording_studio.video.errors.url.enter_supported` for this gem's not-video URL message (`Enter a supported video URL.`). `Playback::NotVideo#message` looks it up through `Copy` with no English `default:`.
 - Host override coverage for `enter_supported` on a fresh `I18n::Backend::Simple` (real not-video form render) plus `:fr` lookup coverage.
-- Test-only probe English moved to `test/locales/video_probe_boot_mark.en.yml` (gemspec excludes `test/`); packaged `config/locales/en.yml` no longer ships `probes.*`.
+- Packaged `config/locales/en.yml` no longer ships `probes.*`. Dummy boot-order override targets packaged `errors.url.enter_supported` (only shown after an invalid submit).
 
 ### Changed
 

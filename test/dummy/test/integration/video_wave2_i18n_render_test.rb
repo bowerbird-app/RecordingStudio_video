@@ -30,7 +30,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "HOST Title"
     refute_includes response.body, "HOST Description"
     refute_includes response.body, "HOST Paste a link to a supported video, such as YouTube."
-    refute_includes response.body, "HOST boot override seen"
+    refute_includes response.body, "HOST Enter a supported video URL."
   end
 
   test "unsupported provider error stays external embed english on the form" do
@@ -48,7 +48,9 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Video URL"
   end
 
-  test "resolved non-video embed shows main english url error on the form" do
+  # Boot override always loads HOST for enter_supported; GET /videos/new still
+  # shows gem English labels (that key is absent until an invalid submit).
+  test "resolved non-video embed shows boot-overridden host url error on the form" do
     provider = RecordingStudio::ExternalEmbed::Provider.define(:gallery) do
       host "gallery.test"
       label "Gallery"
@@ -72,10 +74,9 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "Enter a supported video URL."
+    assert_select "p", text: "HOST Enter a supported video URL."
     assert_includes response.body, "Video URL"
-    refute_includes response.body, "HOST Enter a supported video URL."
-    assert_equal "Enter a supported video URL.",
+    assert_equal "HOST Enter a supported video URL.",
                  RecordingStudioVideo::Copy.t("errors.url.enter_supported")
   end
 end

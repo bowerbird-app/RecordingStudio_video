@@ -127,10 +127,54 @@ class VideoRecordableTest < ActiveSupport::TestCase
       html = VideoPlayerHelperTest::View.new.recording_studio_video_player(video)
     end
 
-    assert_equal ["Enter a supported video URL."], video.errors[:url]
-    assert_equal [{ error: "Enter a supported video URL." }], video.errors.details[:url]
+    # Dummy boot override always loads HOST for enter_supported.
+    assert_equal ["HOST Enter a supported video URL."], video.errors[:url]
+    assert_equal [{ error: "HOST Enter a supported video URL." }], video.errors.details[:url]
     assert_equal "", html
     assert_predicate html, :html_safe?
+  end
+
+  test "a resolved non-video embed carries translated details under french locale" do
+    french = "Saisissez une URL vidéo prise en charge."
+    provider = RecordingStudio::ExternalEmbed::Provider.define(:gallery_fr) do
+      host "gallery.test"
+      label "Gallery"
+      embed_host "gallery.test"
+      embeds_as "https://gallery.test/embed/{id}"
+      canonical "https://gallery.test/items/{id}"
+      match(content_type: :image, aspect: Rational(1, 1)) do
+        path %r{\A/items/(?<id>[A-Za-z0-9_-]{1,64})/?\z}
+      end
+    end
+
+    previous_locales = I18n.available_locales
+    previous_backend = I18n.backend
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.t("recording_studio.video.errors.url.enter_supported")
+    I18n.backend.load_translations(
+      File.expand_path("../config/locales/en.yml", __dir__)
+    )
+    I18n.backend.store_translations(
+      :fr,
+      recording_studio: {
+        video: {
+          errors: { url: { enter_supported: french } }
+        }
+      }
+    )
+    I18n.available_locales = Array(previous_locales) | [:fr]
+
+    video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
+    I18n.with_locale(:fr) do
+      RecordingStudio::ExternalEmbed.with_providers(provider) do
+        refute video.valid?
+      end
+      assert_equal [{ error: french }], video.errors.details[:url]
+      assert_includes video.errors.full_messages.join(" "), french
+    end
+  ensure
+    I18n.backend = previous_backend if previous_backend
+    I18n.available_locales = previous_locales if previous_locales
   end
 
   test "provider facts are derived and are not columns" do

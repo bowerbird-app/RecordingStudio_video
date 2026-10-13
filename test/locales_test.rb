@@ -117,18 +117,10 @@ class LocalesTest < Minitest::Test
     with_gem_english_backend { assert_french_and_english_video_copy }
   end
 
-  def test_probe_boot_mark_english_lives_only_in_test_locales
+  def test_packaged_en_yml_does_not_ship_probe_keys
     packaged = File.read(File.join(engine_locales_dir, "en.yml"))
     refute_includes packaged, "boot_mark"
     refute_includes packaged, "probes:"
-
-    probe_locale = File.expand_path("locales/video_probe_boot_mark.en.yml", __dir__)
-    assert File.exist?(probe_locale), "expected test-only probe English at #{probe_locale}"
-    assert_includes File.read(probe_locale), "video-boot-probe"
-
-    gemspec = File.read(File.expand_path("../recording_studio_video.gemspec", __dir__))
-    assert_includes gemspec, 'Dir["{app,config,db,lib}/**/*"'
-    refute_match(%r{["']test/}, gemspec)
   end
 
   private
