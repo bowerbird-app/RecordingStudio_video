@@ -69,7 +69,7 @@ class LocalesTest < Minitest::Test
     ]
 
     paths.each do |path|
-      code = File.read(path).lines.reject { |line| line.match?(/^\s*#/) }.join
+      code = File.read(path).lines.grep_v(/^\s*#/).join
 
       refute_includes code, "default:",
                       "#{path} must not pass English default: to t() or Copy helpers"
