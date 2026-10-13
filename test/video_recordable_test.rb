@@ -136,45 +136,9 @@ class VideoRecordableTest < ActiveSupport::TestCase
 
   test "a resolved non-video embed carries translated details under french locale" do
     french = "Saisissez une URL vidéo prise en charge."
-    provider = RecordingStudio::ExternalEmbed::Provider.define(:gallery_fr) do
-      host "gallery.test"
-      label "Gallery"
-      embed_host "gallery.test"
-      embeds_as "https://gallery.test/embed/{id}"
-      canonical "https://gallery.test/items/{id}"
-      match(content_type: :image, aspect: Rational(1, 1)) do
-        path %r{\A/items/(?<id>[A-Za-z0-9_-]{1,64})/?\z}
-      end
+    with_french_enter_supported(french) do
+      assert_not_video_details_under_locale(french)
     end
-
-    previous_locales = I18n.available_locales
-    previous_backend = I18n.backend
-    I18n.backend = I18n::Backend::Simple.new
-    I18n.t("recording_studio.video.errors.url.enter_supported")
-    I18n.backend.load_translations(
-      File.expand_path("../config/locales/en.yml", __dir__)
-    )
-    I18n.backend.store_translations(
-      :fr,
-      recording_studio: {
-        video: {
-          errors: { url: { enter_supported: french } }
-        }
-      }
-    )
-    I18n.available_locales = Array(previous_locales) | [:fr]
-
-    video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
-    I18n.with_locale(:fr) do
-      RecordingStudio::ExternalEmbed.with_providers(provider) do
-        refute video.valid?
-      end
-      assert_equal [{ error: french }], video.errors.details[:url]
-      assert_includes video.errors.full_messages.join(" "), french
-    end
-  ensure
-    I18n.backend = previous_backend if previous_backend
-    I18n.available_locales = previous_locales if previous_locales
   end
 
   test "provider facts are derived and are not columns" do
@@ -221,6 +185,46 @@ class VideoRecordableTest < ActiveSupport::TestCase
 
   def unique_name(prefix)
     "#{prefix} #{SecureRandom.hex(4)}"
+  end
+
+  def with_french_enter_supported(french)
+    previous_locales = I18n.available_locales
+    previous_backend = I18n.backend
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.t("recording_studio.video.errors.url.enter_supported")
+    I18n.backend.load_translations(File.expand_path("../config/locales/en.yml", __dir__))
+    I18n.backend.store_translations(
+      :fr,
+      recording_studio: { video: { errors: { url: { enter_supported: french } } } }
+    )
+    I18n.available_locales = Array(previous_locales) | [:fr]
+    yield
+  ensure
+    I18n.backend = previous_backend if previous_backend
+    I18n.available_locales = previous_locales if previous_locales
+  end
+
+  def assert_not_video_details_under_locale(message)
+    provider = gallery_image_provider(:gallery_fr)
+    video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
+    I18n.with_locale(:fr) do
+      RecordingStudio::ExternalEmbed.with_providers(provider) { refute video.valid? }
+      assert_equal [{ error: message }], video.errors.details[:url]
+      assert_includes video.errors.full_messages.join(" "), message
+    end
+  end
+
+  def gallery_image_provider(name)
+    RecordingStudio::ExternalEmbed::Provider.define(name) do
+      host "gallery.test"
+      label "Gallery"
+      embed_host "gallery.test"
+      embeds_as "https://gallery.test/embed/{id}"
+      canonical "https://gallery.test/items/{id}"
+      match(content_type: :image, aspect: Rational(1, 1)) do
+        path %r{\A/items/(?<id>[A-Za-z0-9_-]{1,64})/?\z}
+      end
+    end
   end
 end
 
