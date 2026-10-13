@@ -1,5 +1,6 @@
 # Test-only host override fixture. Loaded via I18n.backend.load_translations
-# inside one integration test — never appended to I18n.load_path.
+# onto a fresh I18n::Backend::Simple inside one integration test — never
+# appended to I18n.load_path and never placed under config/locales.
 en:
   recording_studio:
     video:

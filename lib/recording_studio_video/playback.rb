@@ -6,7 +6,7 @@ module RecordingStudioVideo
 
     class NotVideo
       def message
-        Copy::ENTER_SUPPORTED_VIDEO_URL
+        "Enter a supported video URL."
       end
     end
     private_constant :CONTENT_TYPE, :NotVideo

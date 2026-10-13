@@ -10,8 +10,7 @@ class LocalesTest < Minitest::Test
     "fields.title.label" => "Title",
     "fields.url.label" => "Video URL",
     "fields.url.hint" => "Paste a link to a supported video, such as YouTube.",
-    "fields.description.label" => "Description",
-    "errors.enter_supported_video_url" => Copy::ENTER_SUPPORTED_VIDEO_URL
+    "fields.description.label" => "Description"
   }.freeze
 
   def setup
@@ -19,11 +18,15 @@ class LocalesTest < Minitest::Test
     @previous_backend = I18n.backend
     @previous_locale = I18n.locale
     I18n.backend = I18n::Backend::Simple.new
-    I18n.backend.load_translations(*Dir[File.join(engine_locales_dir, "*.yml")])
-    # load_translations alone leaves initialized=false; the next I18n.t would
-    # re-init from the full load_path (including the dummy boot-order host file).
-    I18n.backend.instance_variable_set(:@initialized, true)
     I18n.locale = :en
+    # Initialize the fresh backend via a public lookup, then load gem English
+    # with the public load_translations API (no backend ivar writes).
+    begin
+      I18n.t("recording_studio.video.fields.title.label", raise: true)
+    rescue I18n::MissingTranslationData
+      # expected before gem en.yml is loaded onto this fresh backend
+    end
+    I18n.backend.load_translations(File.join(engine_locales_dir, "en.yml"))
   end
 
   def teardown
@@ -93,6 +96,7 @@ class LocalesTest < Minitest::Test
            .fetch("video")
 
     refute locale_tree(File.join(engine_locales_dir, "en.yml"), "en").key?("recording_studio_video")
+    refute tree.key?("errors")
 
     EXPECTED.each do |key, english|
       parts = key.split(".")
@@ -125,35 +129,29 @@ class LocalesTest < Minitest::Test
     end
   end
 
-  def test_user_message_mapper_is_pass_through_safe_for_unknown_strings
+  def test_field_labels_resolve_under_french_locale_without_english_default
+    I18n.t("recording_studio.video.fields.url.label")
+    I18n.backend.store_translations(
+      :fr,
+      recording_studio: {
+        video: {
+          fields: {
+            url: { label: "URL de la vidéo" }
+          }
+        }
+      }
+    )
+
+    previous_locales = I18n.available_locales
+    I18n.available_locales = Array(previous_locales) | [:fr]
+    I18n.with_locale(:fr) do
+      assert_equal "URL de la vidéo", Copy.field_label(:url)
+    end
     I18n.with_locale(:en) do
-      assert_equal Copy::ENTER_SUPPORTED_VIDEO_URL, Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
-      assert_equal "That URL is not from a supported provider.",
-                   Copy.user_message("That URL is not from a supported provider.")
-      assert_nil Copy.user_message(nil)
-      assert_equal "", Copy.user_message("")
-      assert_equal "Déjà traduit", Copy.user_message("Déjà traduit")
+      assert_equal "Video URL", Copy.field_label(:url)
     end
-  end
-
-  def test_user_message_maps_known_english_under_french_locale
-    with_french_video_translations do
-      I18n.with_locale(:fr) do
-        assert_equal "Entrez une URL vidéo prise en charge.",
-                     Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
-        assert_equal "That URL is not from a supported provider.",
-                     Copy.user_message("That URL is not from a supported provider.")
-      end
-
-      I18n.with_locale(:en) do
-        assert_equal Copy::ENTER_SUPPORTED_VIDEO_URL,
-                     Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
-      end
-    end
-  end
-
-  def test_playback_and_fields_keep_main_english_literals
-    assert_equal "Enter a supported video URL.", Copy::ENTER_SUPPORTED_VIDEO_URL
+  ensure
+    I18n.available_locales = previous_locales if previous_locales
   end
 
   private
@@ -177,26 +175,5 @@ class LocalesTest < Minitest::Test
         []
       end
     end
-  end
-
-  def with_french_video_translations
-    previous_locales = I18n.available_locales
-    I18n.available_locales = Array(previous_locales) | [:fr]
-    I18n.backend.store_translations(
-      :fr,
-      recording_studio: {
-        video: {
-          errors: {
-            enter_supported_video_url: "Entrez une URL vidéo prise en charge."
-          },
-          fields: {
-            url: { label: "URL de la vidéo" }
-          }
-        }
-      }
-    )
-    yield
-  ensure
-    I18n.available_locales = previous_locales if previous_locales
   end
 end

@@ -49,9 +49,7 @@ module RecordingStudioVideo
       return unless name == :url
 
       messages = video.errors[:url]
-      return if messages.blank?
-
-      messages.map { |message| Copy.user_message(message) }.join(", ")
+      messages.join(", ") if messages.present?
     end
   end
 end

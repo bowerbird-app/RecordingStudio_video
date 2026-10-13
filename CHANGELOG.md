@@ -6,23 +6,22 @@
 
 ### Added
 
-- English Rails I18n keys for non-view copy under `recording_studio.video` (field labels, URL hint, and the gem's own "Enter a supported video URL." validation message) resolve through `Copy` from `config/locales/en.yml` only. Call sites do not pass English `default:`; a missing key behaves like main (translation missing / raise-on-missing).
-- Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded via `I18n.backend.load_translations` (no `I18n.load_path` mutation) plus a real-page assert.
-- Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_video_host.en.yml` for the rarely shown `errors.enter_supported_video_url` key, with a render assert on the video form error state.
+- English Rails I18n keys for non-view field labels and the URL hint under `recording_studio.video` resolve through `Copy` from `config/locales/en.yml` only. Call sites do not pass English `default:`; a missing key behaves like main (translation missing / raise-on-missing).
+- Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded onto a fresh `I18n::Backend::Simple` via public `load_translations` (no `I18n.load_path` mutation) plus a real-page assert.
 - Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
-- Render-level asserts for Title / Video URL / Description labels, the URL hint, External Embed provider errors (pass-through), and the gem's own not-video URL error.
+- Render-level asserts for Title / Video URL / Description labels, the URL hint, and URL errors (main English).
 
 ### Changed
 
-- `recording_studio_video_fields` resolves field labels, the URL hint, and known URL error messages through `Copy` at render. Lib/playback and `errors[:url]` keep main's English literals; English output stays byte-identical.
-- Validation error arrays stay main's English. Displayed form errors map the gem's known English message through `Copy.user_message` at render. External Embed provider messages pass through unchanged.
+- `recording_studio_video_fields` resolves field labels and the URL hint through `Copy` at render. Lib/playback and `errors[:url]` keep main's English literals; English output stays byte-identical.
+- URL validation messages (including this gem's "Enter a supported video URL.") stay main's English at the form; they are not wired through I18n in this release.
 
 ### Upgrade notes
 
 - Bump to `0.2.0`. No migration.
-- English hosts need no change; English comes from the gem's `config/locales/en.yml`.
-- Hosts override by defining the same nested keys in their own `config/locales`. Missing keys are not masked with English `default:`.
-- Recordable labels (`Video` / `Videos`), generator CLI text, developer `ArgumentError`s, ActiveModel presence (`can't be blank`), and External Embed provider messages stay untranslated in this gem.
+- English hosts need no change; English for field labels/hint comes from the gem's `config/locales/en.yml`.
+- Hosts override field labels/hint by defining the same nested keys in their own `config/locales`. Missing keys are not masked with English `default:`.
+- Recordable labels (`Video` / `Videos`), generator CLI text, developer `ArgumentError`s, ActiveModel presence (`can't be blank`), URL validation messages, and External Embed provider messages stay untranslated in this gem.
 
 ## 0.1.0 - 2026-10-06
 
