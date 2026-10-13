@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.2.0] - 2026-10-13
+
+### Added
+
+- English Rails I18n keys for non-view field labels and the URL hint under `recording_studio.video` resolve through `Copy` from `config/locales/en.yml` only. Call sites do not pass English `default:`; a missing key behaves like main (translation missing / raise-on-missing).
+- Host English override coverage: test-only fixture `test/dummy/test/locales/video_host_override.en.yml` loaded onto a fresh `I18n::Backend::Simple` via public `load_translations` (no `I18n.load_path` mutation) covering title, URL label, URL hint, and description on a real page.
+- Boot-order host override: always-loaded dummy `config/locales/recording_studio_video_boot_override.en.yml` on rarely shown `probes.boot_mark`, asserted via test-only `/video_i18n_probe` (normal `/videos` UI stays gem English).
+- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
+- Render-level asserts for Title / Video URL / Description labels, the URL hint, and URL errors (main English).
+
+### Changed
+
+- `recording_studio_video_fields` resolves field labels and the URL hint through `Copy` at render. Lib/playback and `errors[:url]` keep main's English literals; English output stays byte-identical.
+- URL validation messages (including this gem's "Enter a supported video URL.") stay main's English at the form; they are not wired through I18n in this release.
+
+### Upgrade notes
+
+- Bump to `0.2.0`. No migration.
+- English hosts need no change; English for field labels/hint comes from the gem's `config/locales/en.yml`.
+- Hosts override field labels/hint by defining the same nested keys in their own `config/locales`. Missing keys are not masked with English `default:`.
+- Recordable labels (`Video` / `Videos`), generator CLI text, developer `ArgumentError`s, ActiveModel presence (`can't be blank`), URL validation messages, and External Embed provider messages stay untranslated in this gem.
+
 ## 0.1.0 - 2026-10-06
 
 First release.
@@ -22,3 +46,6 @@ A host that has never installed this gem should do the following.
 5. Include `RecordingStudio::Capabilities::Videos.to` on the parent model.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
+
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0
