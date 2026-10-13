@@ -1,0 +1,8 @@
+# Host override for a rarely shown Video URL error (resolved non-video embed).
+# Kept out of the default happy-path UI so other dummy tests still see gem English.
+# Loaded by Rails from config/locales — do not append this path in tests.
+en:
+  recording_studio:
+    video:
+      errors:
+        enter_supported_video_url: "HOST Enter a supported video URL."

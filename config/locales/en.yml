@@ -1,0 +1,13 @@
+en:
+  recording_studio:
+    video:
+      fields:
+        title:
+          label: "Title"
+        url:
+          label: "Video URL"
+          hint: "Paste a link to a supported video, such as YouTube."
+        description:
+          label: "Description"
+      errors:
+        enter_supported_video_url: "Enter a supported video URL."

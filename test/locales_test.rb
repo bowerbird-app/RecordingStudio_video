@@ -1,0 +1,197 @@
+# frozen_string_literal: true
+
+require "test_helper"
+require "yaml"
+
+class LocalesTest < Minitest::Test
+  Copy = RecordingStudioVideo::Copy
+
+  EXPECTED = {
+    "fields.title.label" => Copy::TITLE_LABEL,
+    "fields.url.label" => Copy::URL_LABEL,
+    "fields.url.hint" => Copy::URL_HINT,
+    "fields.description.label" => Copy::DESCRIPTION_LABEL,
+    "errors.enter_supported_video_url" => Copy::ENTER_SUPPORTED_VIDEO_URL
+  }.freeze
+
+  def setup
+    @previous_load_path = I18n.load_path.dup
+    @previous_backend = I18n.backend
+    @previous_locale = I18n.locale
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.backend.load_translations(*Dir[File.join(engine_locales_dir, "*.yml")])
+    # load_translations alone leaves initialized=false; the next I18n.t would
+    # re-init from the full load_path (including the dummy boot-order host file).
+    I18n.backend.instance_variable_set(:@initialized, true)
+    I18n.locale = :en
+  end
+
+  def teardown
+    I18n.backend = @previous_backend
+    I18n.locale = @previous_locale
+    assert_equal @previous_load_path, I18n.load_path,
+                 "locales tests must not mutate I18n.load_path"
+  end
+
+  def test_engine_ships_only_english_locale_files
+    files = Dir[File.join(engine_locales_dir, "*")].map { |path| File.basename(path) }
+
+    assert_equal ["en.yml"], files.sort
+  end
+
+  def test_rails_i18n_load_path_includes_the_gem_english_locale_file
+    locale_path = File.expand_path(File.join(engine_locales_dir, "en.yml"))
+    existent = RecordingStudioVideo::Engine.paths["config/locales"].existent.map do |path|
+      File.expand_path(path)
+    end
+
+    assert_includes existent, locale_path
+  end
+
+  def test_lib_sources_do_not_append_i18n_load_path
+    lib_root = File.expand_path("../lib", __dir__)
+    ruby_files = Dir[File.join(lib_root, "**", "*.rb")]
+
+    refute_empty ruby_files, "expected lib/**/*.rb files to scan"
+
+    ruby_files.each do |path|
+      source = File.read(path)
+
+      refute_includes source, "i18n.load_path", "#{path} must not touch i18n.load_path"
+      refute_includes source, "I18n.load_path", "#{path} must not touch I18n.load_path"
+    end
+  end
+
+  def test_english_video_keys_resolve_without_missing_translations
+    I18n.with_locale(:en) do
+      EXPECTED.each do |key, english|
+        assert_equal english, I18n.t("recording_studio.video.#{key}", raise: true),
+                     "expected #{key} to resolve to #{english.inspect}"
+        assert_equal english, Copy.t(key, default: english),
+                     "expected Copy.t(#{key.inspect}) to resolve to #{english.inspect}"
+      end
+    end
+  end
+
+  def test_en_yml_nests_keys_under_recording_studio_video
+    tree = locale_tree(File.join(engine_locales_dir, "en.yml"), "en")
+           .fetch("recording_studio")
+           .fetch("video")
+
+    refute locale_tree(File.join(engine_locales_dir, "en.yml"), "en").key?("recording_studio_video")
+
+    EXPECTED.each do |key, english|
+      parts = key.split(".")
+      value = parts.reduce(tree) { |memo, part| memo.fetch(part) }
+      assert_equal english, value
+    end
+  end
+
+  def test_copy_t_default_english_wins_when_key_missing_in_locale
+    I18n.with_locale(:en) do
+      assert_equal(
+        Copy::URL_LABEL,
+        Copy.t("fields.url.label", default: Copy::URL_LABEL)
+      )
+      assert_equal(
+        "Fallback label",
+        Copy.t("fields.missing_wave2_key", default: "Fallback label")
+      )
+    end
+  end
+
+  def test_quoted_yes_no_on_off_keys_resolve_when_present
+    keys = collect_yes_no_on_off_keys(
+      locale_tree(File.join(engine_locales_dir, "en.yml"), "en")
+        .fetch("recording_studio")
+        .fetch("video")
+    )
+
+    keys.each do |key|
+      assert_equal(
+        I18n.t("recording_studio.video.#{key}", raise: true),
+        Copy.t(key),
+        "yes/no/on/off key #{key} must resolve without default:"
+      )
+    end
+  end
+
+  def test_user_message_mapper_is_pass_through_safe_for_unknown_strings
+    I18n.with_locale(:en) do
+      assert_equal Copy::ENTER_SUPPORTED_VIDEO_URL, Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
+      assert_equal "That URL is not from a supported provider.",
+                   Copy.user_message("That URL is not from a supported provider.")
+      assert_nil Copy.user_message(nil)
+      assert_equal "", Copy.user_message("")
+      assert_equal "Déjà traduit", Copy.user_message("Déjà traduit")
+    end
+  end
+
+  def test_user_message_maps_known_english_under_french_locale
+    with_french_video_translations do
+      I18n.with_locale(:fr) do
+        assert_equal "Entrez une URL vidéo prise en charge.",
+                     Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
+        assert_equal "That URL is not from a supported provider.",
+                     Copy.user_message("That URL is not from a supported provider.")
+      end
+
+      I18n.with_locale(:en) do
+        assert_equal Copy::ENTER_SUPPORTED_VIDEO_URL,
+                     Copy.user_message(Copy::ENTER_SUPPORTED_VIDEO_URL)
+      end
+    end
+  end
+
+  def test_playback_and_fields_keep_main_english_literals
+    assert_equal "Enter a supported video URL.", Copy::ENTER_SUPPORTED_VIDEO_URL
+    assert_equal "Title", Copy::TITLE_LABEL
+    assert_equal "Video URL", Copy::URL_LABEL
+    assert_equal "Paste a link to a supported video, such as YouTube.", Copy::URL_HINT
+    assert_equal "Description", Copy::DESCRIPTION_LABEL
+  end
+
+  private
+
+  def engine_locales_dir
+    File.expand_path("../config/locales", __dir__)
+  end
+
+  def locale_tree(path, locale)
+    YAML.safe_load_file(path, aliases: true).fetch(locale)
+  end
+
+  def collect_yes_no_on_off_keys(hash, prefix = [])
+    hash.flat_map do |key, value|
+      path = prefix + [key.to_s]
+      if value.is_a?(Hash)
+        collect_yes_no_on_off_keys(value, path)
+      elsif %w[yes no on off true false null].include?(key.to_s)
+        [path.join(".")]
+      else
+        []
+      end
+    end
+  end
+
+  def with_french_video_translations
+    previous_locales = I18n.available_locales
+    I18n.available_locales = Array(previous_locales) | [:fr]
+    I18n.backend.store_translations(
+      :fr,
+      recording_studio: {
+        video: {
+          errors: {
+            enter_supported_video_url: "Entrez une URL vidéo prise en charge."
+          },
+          fields: {
+            url: { label: "URL de la vidéo" }
+          }
+        }
+      }
+    )
+    yield
+  ensure
+    I18n.available_locales = previous_locales if previous_locales
+  end
+end

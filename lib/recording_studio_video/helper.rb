@@ -39,8 +39,8 @@ module RecordingStudioVideo
       render FIELD_COMPONENTS.fetch(spec.fetch(:input)).constantize.new(
         name: "#{video.model_name.param_key}[#{name}]",
         value: video.public_send(name),
-        label: spec.fetch(:label),
-        help_text: spec[:hint],
+        label: Copy.field_label(name, default: spec.fetch(:label)),
+        help_text: Copy.field_hint(name, default: spec[:hint]),
         error: video_field_error(video, name)
       )
     end
@@ -49,7 +49,9 @@ module RecordingStudioVideo
       return unless name == :url
 
       messages = video.errors[:url]
-      messages.join(", ") if messages.present?
+      return if messages.blank?
+
+      messages.map { |message| Copy.user_message(message) }.join(", ")
     end
   end
 end
