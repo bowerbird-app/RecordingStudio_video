@@ -11,7 +11,7 @@ class LocalesTest < Minitest::Test
     "fields.url.label" => "Video URL",
     "fields.url.hint" => "Paste a link to a supported video, such as YouTube.",
     "fields.description.label" => "Description",
-    "probes.boot_mark" => "video-boot-probe"
+    "errors.url.enter_supported" => "Enter a supported video URL."
   }.freeze
 
   def setup
@@ -97,7 +97,7 @@ class LocalesTest < Minitest::Test
            .fetch("video")
 
     refute locale_tree(File.join(engine_locales_dir, "en.yml"), "en").key?("recording_studio_video")
-    refute tree.key?("errors")
+    refute tree.key?("probes"), "probe keys must not ship in packaged gem locales"
 
     EXPECTED.each do |key, english|
       parts = key.split(".")
@@ -130,7 +130,7 @@ class LocalesTest < Minitest::Test
     end
   end
 
-  def test_field_labels_resolve_under_french_locale_without_english_default
+  def test_field_labels_and_enter_supported_resolve_under_french_locale
     I18n.t("recording_studio.video.fields.url.label")
     I18n.backend.store_translations(
       :fr,
@@ -138,6 +138,9 @@ class LocalesTest < Minitest::Test
         video: {
           fields: {
             url: { label: "URL de la vidéo" }
+          },
+          errors: {
+            url: { enter_supported: "Saisissez une URL vidéo prise en charge." }
           }
         }
       }
@@ -147,12 +150,30 @@ class LocalesTest < Minitest::Test
     I18n.available_locales = Array(previous_locales) | [:fr]
     I18n.with_locale(:fr) do
       assert_equal "URL de la vidéo", Copy.field_label(:url)
+      assert_equal "Saisissez une URL vidéo prise en charge.",
+                   Copy.t("errors.url.enter_supported")
     end
     I18n.with_locale(:en) do
       assert_equal "Video URL", Copy.field_label(:url)
+      assert_equal "Enter a supported video URL.",
+                   Copy.t("errors.url.enter_supported")
     end
   ensure
     I18n.available_locales = previous_locales if previous_locales
+  end
+
+  def test_probe_boot_mark_english_lives_only_in_test_locales
+    packaged = File.read(File.join(engine_locales_dir, "en.yml"))
+    refute_includes packaged, "boot_mark"
+    refute_includes packaged, "probes:"
+
+    probe_locale = File.expand_path("locales/video_probe_boot_mark.en.yml", __dir__)
+    assert File.exist?(probe_locale), "expected test-only probe English at #{probe_locale}"
+    assert_includes File.read(probe_locale), "video-boot-probe"
+
+    gemspec = File.read(File.expand_path("../recording_studio_video.gemspec", __dir__))
+    assert_includes gemspec, 'Dir["{app,config,db,lib}/**/*"'
+    refute_match(/["']test\//, gemspec)
   end
 
   private

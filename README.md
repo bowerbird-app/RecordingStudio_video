@@ -16,7 +16,7 @@ Add the gem next to Recording Studio, External Embed, and Flatpack.
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_external_embed", "~> 0.1.1"
 gem "flat_pack", ">= 0.1.135"
-gem "recording_studio_video", "~> 0.2.0"
+gem "recording_studio_video", "~> 0.2.1"
 ```
 
 This repository pins GitHub tags `v4.2.2`, `v0.1.3`, and `v0.1.198` for Recording Studio, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time.
@@ -95,7 +95,7 @@ end
 
 The engine includes two helpers into Action Controller, the same way External Embed includes `recording_studio_external_embed`.
 
-`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]` (main English). Field labels and the URL hint resolve through `recording_studio.video.*` at render (`Copy`); English comes from `config/locales/en.yml` only (no English `default:`). Hosts override those keys in their own `config/locales`. This helper does not render the player.
+`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]` (joined at render). Field labels, the URL hint, and this gem's not-video URL message resolve through `recording_studio.video.*` (`Copy`); English comes from `config/locales/en.yml` only (no English `default:`). Hosts override those keys in their own `config/locales`. External Embed provider messages stay that gem's English. This helper does not render the player.
 
 `recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 

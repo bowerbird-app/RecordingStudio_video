@@ -1,6 +1,7 @@
 # Host nested override for a rarely shown probe key (boot-order guard).
 # Loaded by Rails from config/locales — do not append this path in tests.
-# Visible field labels/hint on /videos/new stay on gem English.
+# Probe English for this key lives only under test/locales (not packaged).
+# Visible field labels/hint/errors on /videos stay on gem English.
 en:
   recording_studio:
     video:

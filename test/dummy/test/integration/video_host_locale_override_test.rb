@@ -10,6 +10,7 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   HOST_URL_LABEL = "HOST Video URL"
   HOST_URL_HINT = "HOST Paste a link to a supported video, such as YouTube."
   HOST_DESCRIPTION_LABEL = "HOST Description"
+  HOST_ENTER_SUPPORTED = "HOST Enter a supported video URL."
   HOST_BOOT_MARK = "HOST boot override seen"
   MAIN_BOOT_MARK = "video-boot-probe"
   BOOT_MARK_KEY = "recording_studio.video.probes.boot_mark"
@@ -17,6 +18,7 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   URL_LABEL_KEY = "recording_studio.video.fields.url.label"
   URL_HINT_KEY = "recording_studio.video.fields.url.hint"
   DESCRIPTION_LABEL_KEY = "recording_studio.video.fields.description.label"
+  ENTER_SUPPORTED_KEY = "recording_studio.video.errors.url.enter_supported"
   BOOT_HOST_LOCALE = Rails.root.join("config/locales/recording_studio_video_boot_override.en.yml")
   FRESH_HOST_LOCALE = Rails.root.join("test/locales/video_host_override.en.yml")
 
@@ -85,14 +87,16 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
 
   # Test-only fixture on a fresh backend: I18n.t once to initialize, then
   # load_translations into that backend, assert HOST as a precondition, render.
-  # Covers title, url label, url hint, and description so a literal revert fails.
-  test "fresh-backend host fixture overrides gem english field copy" do
+  # Covers title, url label, url hint, description, and enter_supported so a
+  # literal revert of NotVideo#message fails.
+  test "fresh-backend host fixture overrides gem english field and error copy" do
     assert File.exist?(FRESH_HOST_LOCALE), "expected test-only host override fixture at #{FRESH_HOST_LOCALE}"
     fixture = File.read(FRESH_HOST_LOCALE)
     assert_includes fixture, HOST_TITLE_LABEL
     assert_includes fixture, HOST_URL_LABEL
     assert_includes fixture, HOST_URL_HINT
     assert_includes fixture, HOST_DESCRIPTION_LABEL
+    assert_includes fixture, HOST_ENTER_SUPPORTED
 
     I18n.backend = I18n::Backend::Simple.new
     I18n.t(URL_LABEL_KEY)
@@ -107,6 +111,8 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
                  "HOST url hint must win on the fresh backend before the page render"
     assert_equal HOST_DESCRIPTION_LABEL, I18n.t(DESCRIPTION_LABEL_KEY),
                  "HOST description label must win on the fresh backend before the page render"
+    assert_equal HOST_ENTER_SUPPORTED, I18n.t(ENTER_SUPPORTED_KEY),
+                 "HOST enter_supported must win on the fresh backend before the page render"
 
     get new_video_path(workspace_id: @root.id)
     assert_response :success
@@ -114,6 +120,31 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     assert_includes response.body, HOST_URL_LABEL
     assert_includes response.body, HOST_URL_HINT
     assert_includes response.body, HOST_DESCRIPTION_LABEL
+
+    provider = RecordingStudio::ExternalEmbed::Provider.define(:gallery_host_override) do
+      host "gallery.test"
+      label "Gallery"
+      embed_host "gallery.test"
+      embeds_as "https://gallery.test/embed/{id}"
+      canonical "https://gallery.test/items/{id}"
+      match(content_type: :image, aspect: Rational(1, 1)) do
+        path %r{\A/items/(?<id>[A-Za-z0-9_-]{1,64})/?\z}
+      end
+    end
+
+    RecordingStudio::ExternalEmbed.with_providers(provider) do
+      post videos_path, params: {
+        workspace_id: @root.id,
+        video: {
+          title: "Gallery",
+          url: "https://gallery.test/items/photo1",
+          description: "Skip"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, HOST_ENTER_SUPPORTED
   ensure
     I18n.backend = @backend_before if @backend_before
   end

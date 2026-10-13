@@ -80,6 +80,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
 
     refute video.valid?
     assert_includes video.errors[:url], "can't be blank"
+    assert_equal [{ error: :blank }], video.errors.details[:url]
   end
 
   test "an unsupported host is invalid with the external embed message" do
@@ -127,6 +128,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
     end
 
     assert_equal ["Enter a supported video URL."], video.errors[:url]
+    assert_equal [{ error: "Enter a supported video URL." }], video.errors.details[:url]
     assert_equal "", html
     assert_predicate html, :html_safe?
   end

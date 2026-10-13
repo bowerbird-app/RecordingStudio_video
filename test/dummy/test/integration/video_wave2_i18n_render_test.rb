@@ -75,5 +75,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Enter a supported video URL."
     assert_includes response.body, "Video URL"
     refute_includes response.body, "HOST Enter a supported video URL."
+    assert_equal "Enter a supported video URL.",
+                 RecordingStudioVideo::Copy.t("errors.url.enter_supported")
   end
 end

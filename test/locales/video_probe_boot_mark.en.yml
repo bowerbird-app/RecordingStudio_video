@@ -1,0 +1,8 @@
+# Test-only English for the dummy boot-order probe key.
+# Gemspec packs only {app,config,db,lib} — this file is not shipped.
+# Dummy boot override under test/dummy/config/locales supplies HOST text.
+en:
+  recording_studio:
+    video:
+      probes:
+        boot_mark: "video-boot-probe"

@@ -12,3 +12,6 @@ en:
           hint: "HOST Paste a link to a supported video, such as YouTube."
         description:
           label: "HOST Description"
+      errors:
+        url:
+          enter_supported: "HOST Enter a supported video URL."

@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-13
+
+### Added
+
+- English key `recording_studio.video.errors.url.enter_supported` for this gem's not-video URL message (`Enter a supported video URL.`). `Playback::NotVideo#message` looks it up through `Copy` with no English `default:`.
+- Host override coverage for `enter_supported` on a fresh `I18n::Backend::Simple` (real not-video form render) plus `:fr` lookup coverage.
+- Test-only probe English moved to `test/locales/video_probe_boot_mark.en.yml` (gemspec excludes `test/`); packaged `config/locales/en.yml` no longer ships `probes.*`.
+
+### Changed
+
+- `errors.add(:url, …)` for the not-video case still passes a String as the error type (same as main). The String is the translated lookup so `:en` stays byte-identical; in non-en locales `errors[:url]` details carry the translated string.
+- Presence (`:blank`) and External Embed unresolved messages stay main's symbol / External Embed English literals. No persistence or publish sink stores these validation strings.
+
+### Upgrade notes
+
+- Bump to `0.2.1`. No migration.
+- Hosts that override `errors.url.enter_supported` change the not-video form message. Missing keys are not masked with English `default:`.
+- External Embed provider messages remain untranslated in this gem.
+
 ## [0.2.0] - 2026-10-13
 
 ### Added
@@ -47,5 +66,6 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0
