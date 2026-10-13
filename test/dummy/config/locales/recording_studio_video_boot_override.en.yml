@@ -1,8 +1,10 @@
-# Host nested override for a rarely shown probe key (boot-order guard).
+# Host nested override for a rarely shown packaged key (boot-order guard).
 # Loaded by Rails from config/locales — do not append this path in tests.
-# Visible field labels/hint on /videos/new stay on gem English.
+# enter_supported only appears after an invalid submit; /videos/new GET stays
+# gem English for field labels and the URL hint.
 en:
   recording_studio:
     video:
-      probes:
-        boot_mark: "HOST boot override seen"
+      errors:
+        url:
+          enter_supported: "HOST Enter a supported video URL."

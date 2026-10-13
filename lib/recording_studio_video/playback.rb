@@ -6,7 +6,9 @@ module RecordingStudioVideo
 
     class NotVideo
       def message
-        "Enter a supported video URL."
+        # Main passed this English String as the errors.add type. Keep a String
+        # type (not a symbol): look up en.yml so :en stays byte-identical.
+        Copy.t("errors.url.enter_supported")
       end
     end
     private_constant :CONTENT_TYPE, :NotVideo
