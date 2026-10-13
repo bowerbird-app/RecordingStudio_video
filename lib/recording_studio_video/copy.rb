@@ -14,11 +14,6 @@ module RecordingStudioVideo
 
     ENTER_SUPPORTED_VIDEO_URL = "Enter a supported video URL."
 
-    TITLE_LABEL = "Title"
-    URL_LABEL = "Video URL"
-    URL_HINT = "Paste a link to a supported video, such as YouTube."
-    DESCRIPTION_LABEL = "Description"
-
     USER_MESSAGE_KEYS = {
       ENTER_SUPPORTED_VIDEO_URL => "errors.enter_supported_video_url"
     }.freeze

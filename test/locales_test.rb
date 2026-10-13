@@ -7,10 +7,10 @@ class LocalesTest < Minitest::Test
   Copy = RecordingStudioVideo::Copy
 
   EXPECTED = {
-    "fields.title.label" => Copy::TITLE_LABEL,
-    "fields.url.label" => Copy::URL_LABEL,
-    "fields.url.hint" => Copy::URL_HINT,
-    "fields.description.label" => Copy::DESCRIPTION_LABEL,
+    "fields.title.label" => "Title",
+    "fields.url.label" => "Video URL",
+    "fields.url.hint" => "Paste a link to a supported video, such as YouTube.",
+    "fields.description.label" => "Description",
     "errors.enter_supported_video_url" => Copy::ENTER_SUPPORTED_VIDEO_URL
   }.freeze
 
@@ -90,8 +90,8 @@ class LocalesTest < Minitest::Test
   def test_copy_t_default_english_wins_when_key_missing_in_locale
     I18n.with_locale(:en) do
       assert_equal(
-        Copy::URL_LABEL,
-        Copy.t("fields.url.label", default: Copy::URL_LABEL)
+        "Video URL",
+        Copy.t("fields.url.label", default: "Video URL")
       )
       assert_equal(
         "Fallback label",
@@ -145,10 +145,6 @@ class LocalesTest < Minitest::Test
 
   def test_playback_and_fields_keep_main_english_literals
     assert_equal "Enter a supported video URL.", Copy::ENTER_SUPPORTED_VIDEO_URL
-    assert_equal "Title", Copy::TITLE_LABEL
-    assert_equal "Video URL", Copy::URL_LABEL
-    assert_equal "Paste a link to a supported video, such as YouTube.", Copy::URL_HINT
-    assert_equal "Description", Copy::DESCRIPTION_LABEL
   end
 
   private
