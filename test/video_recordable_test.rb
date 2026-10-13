@@ -109,29 +109,31 @@ class VideoRecordableTest < ActiveSupport::TestCase
   end
 
   test "a resolved non-video embed is invalid" do
-    provider = RecordingStudio::ExternalEmbed::Provider.define(:gallery) do
-      host "gallery.test"
-      label "Gallery"
-      embed_host "gallery.test"
-      embeds_as "https://gallery.test/embed/{id}"
-      canonical "https://gallery.test/items/{id}"
-      match(content_type: :image, aspect: Rational(1, 1)) do
-        path %r{\A/items/(?<id>[A-Za-z0-9_-]{1,64})/?\z}
+    with_gem_english_backend do
+      provider = gallery_image_provider(:gallery)
+      video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
+      html = nil
+      RecordingStudio::ExternalEmbed.with_providers(provider) do
+        refute video.valid?
+        html = VideoPlayerHelperTest::View.new.recording_studio_video_player(video)
       end
-    end
 
+      assert_equal ["Enter a supported video URL."], video.errors[:url]
+      assert_equal [{ error: "Enter a supported video URL." }], video.errors.details[:url]
+      assert_equal "", html
+      assert_predicate html, :html_safe?
+    end
+  end
+
+  test "a resolved non-video embed uses dummy boot host enter_supported" do
+    provider = gallery_image_provider(:gallery_host)
     video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
-    html = nil
     RecordingStudio::ExternalEmbed.with_providers(provider) do
       refute video.valid?
-      html = VideoPlayerHelperTest::View.new.recording_studio_video_player(video)
     end
 
-    # Dummy boot override always loads HOST for enter_supported.
     assert_equal ["HOST Enter a supported video URL."], video.errors[:url]
     assert_equal [{ error: "HOST Enter a supported video URL." }], video.errors.details[:url]
-    assert_equal "", html
-    assert_predicate html, :html_safe?
   end
 
   test "a resolved non-video embed carries translated details under french locale" do
@@ -187,21 +189,37 @@ class VideoRecordableTest < ActiveSupport::TestCase
     "#{prefix} #{SecureRandom.hex(4)}"
   end
 
-  def with_french_enter_supported(french)
-    previous_locales = I18n.available_locales
+  def with_gem_english_backend
+    previous_load_path = I18n.load_path.dup
     previous_backend = I18n.backend
+    previous_locale = I18n.locale
     I18n.backend = I18n::Backend::Simple.new
-    I18n.t("recording_studio.video.errors.url.enter_supported")
+    I18n.locale = :en
+    begin
+      I18n.t("recording_studio.video.errors.url.enter_supported", raise: true)
+    rescue I18n::MissingTranslationData
+      # expected before gem en.yml is loaded onto this fresh backend
+    end
     I18n.backend.load_translations(File.expand_path("../config/locales/en.yml", __dir__))
-    I18n.backend.store_translations(
-      :fr,
-      recording_studio: { video: { errors: { url: { enter_supported: french } } } }
-    )
-    I18n.available_locales = Array(previous_locales) | [:fr]
     yield
   ensure
-    I18n.backend = previous_backend if previous_backend
-    I18n.available_locales = previous_locales if previous_locales
+    I18n.backend = previous_backend
+    I18n.locale = previous_locale
+    assert_equal previous_load_path, I18n.load_path
+  end
+
+  def with_french_enter_supported(french)
+    with_gem_english_backend do
+      previous_locales = I18n.available_locales
+      I18n.backend.store_translations(
+        :fr,
+        recording_studio: { video: { errors: { url: { enter_supported: french } } } }
+      )
+      I18n.available_locales = Array(previous_locales) | [:fr]
+      yield
+    ensure
+      I18n.available_locales = previous_locales if previous_locales
+    end
   end
 
   def assert_not_video_details_under_locale(message)
