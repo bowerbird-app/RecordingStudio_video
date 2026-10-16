@@ -18,6 +18,13 @@ require "action_cable/engine"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Opt-in boot path for Video API registration tests. recording_studio_api stays
+# require: false in the Gemfile so normal dummy boot does not load it.
+if ENV["RECORDING_STUDIO_VIDEO_LOAD_API"] == "1"
+  $LOAD_PATH.unshift(File.expand_path("api_boot_stubs", __dir__))
+  require "recording_studio_api"
+end
+
 module Dummy
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

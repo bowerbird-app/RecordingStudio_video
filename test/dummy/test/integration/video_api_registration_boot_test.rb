@@ -1,45 +1,52 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "recording_studio_api"
 
 # Hosts that load RecordingStudioApi used to NameError at boot when this gem
 # called register_integrations! from the after_initialize initializer before
 # the main autoloader could resolve RecordingStudioVideo::Video. They worked
 # around it with an early require and/or Object.const_set(:Video, ...).
-# Registration must wait for to_prepare and must not need those host hacks.
+#
+# This subprocess boots the dummy with RECORDING_STUDIO_VIDEO_LOAD_API=1 so
+# recording_studio_api is required in application.rb and registration happens
+# on the real to_prepare path (not a hand-called register_integrations!).
+# Moving registration back onto after_initialize makes this runner exit non-zero.
 class VideoApiRegistrationBootTest < ActiveSupport::TestCase
-  test "api registers from to_prepare without host Video require or const_set" do
-    assert defined?(::RecordingStudioApi)
-    refute Object.const_defined?(:Video, false)
+  test "rails runner boot registers Video via to_prepare with RecordingStudioApi loaded" do
+    script = <<~'RUBY'
+      begin
+        raise "top-level Video must not exist" if Object.const_defined?(:Video, false)
+        raise "RecordingStudioApi missing" unless defined?(::RecordingStudioApi)
 
-    real_video = RecordingStudioVideo::Video
-    RecordingStudioVideo.send(:remove_const, :Video)
+        registration = RecordingStudioApi.recordable_registration_for("RecordingStudioVideo::Video")
+        raise "Video not registered" unless registration
+        unless registration.writable_attributes == %w[description title url]
+          raise "bad writable: #{registration.writable_attributes.inspect}"
+        end
+        unless registration.output_keys.sort == %w[description title url]
+          raise "bad output: #{registration.output_keys.inspect}"
+        end
+        unless registration.fields.keys.sort == %w[canonical_url content_type provider]
+          raise "bad fields: #{registration.fields.keys.inspect}"
+        end
 
-    begin
-      # Autoloader not ready: nested Video is missing. after_initialize must not
-      # call register_integrations! (that NameErrors when RecordingStudioApi is loaded).
-      after_initialize = RecordingStudioVideo::Engine.initializers.find do |entry|
-        entry.name == "recording_studio_video.after_initialize"
+        RecordingStudioApi.configuration.validate!
+        puts "VIDEO_API_BOOT_OK"
+      ensure
+        RecordingStudioApi.prepare_recordable_registries_for_reload!
       end
-      after_initialize.block.call(Object.new)
+    RUBY
 
-      # Autoloader ready (to_prepare): the model constant is available without a
-      # host require or top-level Video const_set.
-      RecordingStudioVideo.const_set(:Video, real_video)
-      RecordingStudioVideo.register_integrations!
+    output = IO.popen(
+      { "RECORDING_STUDIO_VIDEO_LOAD_API" => "1" },
+      %w[bundle exec bin/rails runner] + [script],
+      chdir: Rails.root.to_s,
+      err: %i[child out]
+    ) { |io| io.read }
 
-      registration = RecordingStudioApi.recordable_registration_for("RecordingStudioVideo::Video")
-
-      assert registration
-      assert_equal %w[description title url], registration.writable_attributes
-      assert_equal %w[description title url], registration.output_keys.sort
-      assert_equal %w[canonical_url content_type provider], registration.fields.keys.sort
-      assert_nothing_raised { RecordingStudioApi.configuration.validate! }
-      refute Object.const_defined?(:Video, false)
-    ensure
-      RecordingStudioVideo.send(:remove_const, :Video) if RecordingStudioVideo.const_defined?(:Video, false)
-      RecordingStudioVideo.const_set(:Video, real_video)
-    end
+    assert_equal true, $?.success?, output
+    assert_includes output, "VIDEO_API_BOOT_OK"
+    refute Object.const_defined?(:Video, false)
+    refute defined?(::RecordingStudioApi)
   end
 end

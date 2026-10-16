@@ -68,9 +68,12 @@ gem "ruby-vips", require: false
 
 group :development, :test do
   # Real API registry for boot/registration tests (not a gemspec dependency).
-  # require: false so dummy boot does not pull RecordingStudio Admin view prep;
-  # tests require it explicitly when asserting registry/validate!.
-  gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v0.10.0", require: false
+  # require: false so normal dummy boot skips it; set RECORDING_STUDIO_VIDEO_LOAD_API=1
+  # in application.rb to require it at boot for the rails runner registration test.
+  # v0.11.2 provides prepare_recordable_registries_for_reload!.
+  # Metrics v0.3.1 / Root Switchable v0.9.4 above are required by this gemspec
+  # (Metrics >= 0.3, < 0.4); the root Gemfile stays on Metrics 0.2.0 / RS 0.9.0.
+  gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v0.11.2", require: false
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
