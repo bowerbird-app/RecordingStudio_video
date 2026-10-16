@@ -27,6 +27,39 @@ class EngineTest < Minitest::Test
     assert after_called
   end
 
+  def test_after_initialize_does_not_register_integrations
+    after_called = false
+    registered = false
+    RecordingStudioVideo.configuration.hooks.after_initialize { after_called = true }
+
+    RecordingStudioVideo.stub(:register_integrations!, -> { registered = true }) do
+      find_initializer("recording_studio_video.after_initialize").block.call(Object.new)
+    end
+
+    assert after_called
+    refute registered
+  end
+
+  def test_prepare_registers_integrations_via_to_prepare
+    to_prepare_blocks = []
+    config_stub = Object.new
+    config_stub.define_singleton_method(:to_prepare) do |&block|
+      to_prepare_blocks << block
+    end
+    registered = false
+
+    RecordingStudioVideo::Engine.stub(:config, config_stub) do
+      find_initializer("recording_studio_video.prepare").block.call
+    end
+
+    RecordingStudioVideo.stub(:register_integrations!, -> { registered = true }) do
+      to_prepare_blocks.first.call
+    end
+
+    assert_equal 1, to_prepare_blocks.size
+    assert registered
+  end
+
   def test_load_config_merges_config_sources_and_runs_on_configuration_hook
     hook_called = false
     hook_payload = nil

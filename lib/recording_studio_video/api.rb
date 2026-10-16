@@ -4,19 +4,19 @@ module RecordingStudioVideo
   module Api
     def self.register!
       return unless defined?(::RecordingStudioApi)
-      return if RecordingStudioApi.recordable_registration_for(Video.name)
+      return if ::RecordingStudioApi.recordable_registration_for(::RecordingStudioVideo::Video.name)
 
-      RecordingStudioApi.register_recordable_type_api(
-        Video.name,
+      ::RecordingStudioApi.register_recordable_type_api(
+        ::RecordingStudioVideo::Video.name,
         serializer: serializer,
-        output_keys: Video::WRITABLE,
-        writable_attributes: Video::WRITABLE,
+        output_keys: ::RecordingStudioVideo::Video::WRITABLE,
+        writable_attributes: ::RecordingStudioVideo::Video::WRITABLE,
         fields: derived_fields
       )
     end
 
     def self.derived_fields
-      Video::DERIVED.index_with do |name|
+      ::RecordingStudioVideo::Video::DERIVED.index_with do |name|
         {
           resolver: ->(context) { context.recordable.public_send(name) },
           include: true,
@@ -27,7 +27,7 @@ module RecordingStudioVideo
 
     def self.serializer
       lambda do |video, **|
-        Video::WRITABLE.index_with { |name| video.public_send(name) }
+        ::RecordingStudioVideo::Video::WRITABLE.index_with { |name| video.public_send(name) }
       end
     end
     private_class_method :serializer

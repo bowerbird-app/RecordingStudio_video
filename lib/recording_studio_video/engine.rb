@@ -90,10 +90,11 @@ module RecordingStudioVideo
       RecordingStudioVideo.configuration.hooks.run(:on_configuration, RecordingStudioVideo.configuration)
     end
 
-    # Run after_initialize hooks
+    # Run after_initialize hooks. Do not register integrations here: the host
+    # autoloader is not ready yet, so ::RecordingStudioVideo::Video can NameError
+    # when RecordingStudioApi is already loaded. Registration runs in to_prepare.
     initializer "recording_studio_video.after_initialize", after: "recording_studio_video.load_config" do |_app|
       RecordingStudioVideo.configuration.hooks.run(:after_initialize, self)
-      RecordingStudioVideo.register_integrations!
     end
 
     initializer "recording_studio_video.prepare" do
