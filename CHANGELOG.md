@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-16
+
+### Fixed
+
+- `RecordingStudioVideo::Api` qualifies `::RecordingStudioVideo::Video` (and `::RecordingStudioApi`) so API registration does not depend on a top-level `Video` constant. Hosts no longer need an application `const_set` workaround for boot-time registration.
+
+### Upgrade notes
+
+- Bump to `0.2.2`. No migration.
+- If the host defined a top-level `Video` constant only so this gem's API registration could resolve, that alias can be removed.
+
 ## [0.2.1] - 2026-10-13
 
 ### Added
@@ -66,6 +77,7 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0

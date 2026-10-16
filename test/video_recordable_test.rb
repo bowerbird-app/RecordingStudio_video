@@ -162,7 +162,65 @@ class VideoRecordableTest < ActiveSupport::TestCase
     assert_nil RecordingStudioVideo::Api.register!
   end
 
+  test "api registration resolves RecordingStudioVideo::Video without a top-level Video constant" do
+    refute Object.const_defined?(:Video, false)
+
+    real_video = RecordingStudioVideo::Video
+    registered = nil
+    with_unloaded_video_and_top_level_decoy(real_video) do |capture|
+      registered = capture
+      RecordingStudioVideo::Api.register!
+    end
+
+    assert_equal "RecordingStudioVideo::Video", registered[:name]
+    assert_equal real_video::WRITABLE, registered[:output_keys]
+    assert_equal real_video::WRITABLE, registered[:writable_attributes]
+    assert_equal real_video::DERIVED, registered[:field_keys]
+  end
+
   private
+
+  def with_unloaded_video_and_top_level_decoy(real_video)
+    capture = {}
+    fake_api = Module.new do
+      define_singleton_method(:recordable_registration_for) { |_| nil }
+      define_singleton_method(:register_recordable_type_api) do |type_name, **kwargs|
+        capture.replace(
+          name: type_name,
+          output_keys: kwargs[:output_keys],
+          writable_attributes: kwargs[:writable_attributes],
+          field_keys: kwargs[:fields].keys
+        )
+      end
+    end
+
+    RecordingStudioVideo.send(:remove_const, :Video)
+    Object.const_set(:Video, top_level_video_decoy)
+    RecordingStudioVideo.define_singleton_method(:const_missing) do |name|
+      raise NameError, "uninitialized constant RecordingStudioVideo::#{name}" unless name == :Video
+
+      const_set(:Video, real_video)
+    end
+    Object.const_set(:RecordingStudioApi, fake_api)
+
+    yield capture
+  ensure
+    Object.send(:remove_const, :RecordingStudioApi) if Object.const_defined?(:RecordingStudioApi, false)
+    Object.send(:remove_const, :Video) if Object.const_defined?(:Video, false)
+    if RecordingStudioVideo.singleton_class.method_defined?(:const_missing, false)
+      RecordingStudioVideo.singleton_class.send(:remove_method, :const_missing)
+    end
+    RecordingStudioVideo.const_set(:Video, real_video) unless RecordingStudioVideo.const_defined?(:Video, false)
+  end
+
+  def top_level_video_decoy
+    Class.new do
+      def self.name = "DecoyVideo"
+
+      const_set(:WRITABLE, %i[decoy].freeze)
+      const_set(:DERIVED, %i[decoy_derived].freeze)
+    end
+  end
 
   def workspace_root
     RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Video Workspace")))

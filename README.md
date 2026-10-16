@@ -16,10 +16,10 @@ Add the gem next to Recording Studio, External Embed, and Flatpack.
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_external_embed", "~> 0.1.1"
 gem "flat_pack", ">= 0.1.135"
-gem "recording_studio_video", "~> 0.2.1"
+gem "recording_studio_video", "~> 0.2.2"
 ```
 
-This repository pins GitHub tags `v4.6.0`, `v0.18.0`, `v0.10.0`, `v0.1.3`, and `v0.1.198` for Recording Studio, Accessible, Trashable, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time.
+This repository pins GitHub tags `v4.6.0`, `v0.18.0`, `v0.10.0`, `v0.1.3`, and `v0.1.198` for Recording Studio, Accessible, Trashable, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` directly; a top-level `Video` constant is not required.
 
 Then install the config and the table.
 

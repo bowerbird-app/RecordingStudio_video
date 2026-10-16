@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.2.1", ::RecordingStudioVideo::VERSION
+    assert_equal "0.2.2", ::RecordingStudioVideo::VERSION
   end
 
   def test_engine_exists
@@ -135,6 +135,16 @@ class RecordingStudioVideoTest < Minitest::Test
     refute File.exist?(File.expand_path("../lib/recording_studio_video/hooks.rb", __dir__))
     refute File.exist?(File.expand_path("../lib/recording_studio_video/services/base_service.rb", __dir__))
     refute File.exist?(File.expand_path("../lib/recording_studio_video/services/example_service.rb", __dir__))
+  end
+
+  def test_api_source_fully_qualifies_video_and_recording_studio_api
+    source = File.read(File.expand_path("../lib/recording_studio_video/api.rb", __dir__))
+    without_qualified = source.gsub("::RecordingStudioVideo::Video", "").gsub("::RecordingStudioApi", "")
+
+    refute_match(/\bVideo\b/, without_qualified)
+    refute_match(/\bRecordingStudioApi\b/, without_qualified)
+    assert_includes source, "::RecordingStudioVideo::Video"
+    assert_includes source, "::RecordingStudioApi"
   end
 
   def test_example_capability_wraps_include_for_and_is_not_enabled_globally
