@@ -182,6 +182,23 @@ class VideoRecordableTest < ActiveSupport::TestCase
 
   def with_unloaded_video_and_top_level_decoy(real_video)
     capture = {}
+    previous = save_top_level_api_and_video_constants
+    install_unloaded_video_api_decoy(real_video, capture)
+    yield capture
+  ensure
+    restore_unloaded_video_api_decoy(real_video, previous)
+  end
+
+  def save_top_level_api_and_video_constants
+    {
+      api_defined: Object.const_defined?(:RecordingStudioApi, false),
+      api: (Object.const_get(:RecordingStudioApi) if Object.const_defined?(:RecordingStudioApi, false)),
+      video_defined: Object.const_defined?(:Video, false),
+      video: (Object.const_get(:Video) if Object.const_defined?(:Video, false))
+    }
+  end
+
+  def install_unloaded_video_api_decoy(real_video, capture)
     fake_api = Module.new do
       define_singleton_method(:recordable_registration_for) { |_| nil }
       define_singleton_method(:register_recordable_type_api) do |type_name, **kwargs|
@@ -195,22 +212,32 @@ class VideoRecordableTest < ActiveSupport::TestCase
     end
 
     RecordingStudioVideo.send(:remove_const, :Video)
-    Object.const_set(:Video, top_level_video_decoy)
+    replace_top_level_constant(:Video, top_level_video_decoy)
     RecordingStudioVideo.define_singleton_method(:const_missing) do |name|
       raise NameError, "uninitialized constant RecordingStudioVideo::#{name}" unless name == :Video
 
       const_set(:Video, real_video)
     end
-    Object.const_set(:RecordingStudioApi, fake_api)
+    replace_top_level_constant(:RecordingStudioApi, fake_api)
+  end
 
-    yield capture
-  ensure
-    Object.send(:remove_const, :RecordingStudioApi) if Object.const_defined?(:RecordingStudioApi, false)
-    Object.send(:remove_const, :Video) if Object.const_defined?(:Video, false)
+  def restore_unloaded_video_api_decoy(real_video, previous)
+    restore_top_level_constant(:RecordingStudioApi, previous[:api_defined], previous[:api])
+    restore_top_level_constant(:Video, previous[:video_defined], previous[:video])
     if RecordingStudioVideo.singleton_class.method_defined?(:const_missing, false)
       RecordingStudioVideo.singleton_class.send(:remove_method, :const_missing)
     end
     RecordingStudioVideo.const_set(:Video, real_video) unless RecordingStudioVideo.const_defined?(:Video, false)
+  end
+
+  def replace_top_level_constant(name, value)
+    Object.send(:remove_const, name) if Object.const_defined?(name, false)
+    Object.const_set(name, value)
+  end
+
+  def restore_top_level_constant(name, was_defined, previous)
+    Object.send(:remove_const, name) if Object.const_defined?(name, false)
+    Object.const_set(name, previous) if was_defined
   end
 
   def top_level_video_decoy

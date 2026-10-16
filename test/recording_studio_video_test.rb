@@ -147,6 +147,24 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes source, "::RecordingStudioApi"
   end
 
+  def test_helper_source_fully_qualifies_video
+    source = File.read(File.expand_path("../lib/recording_studio_video/helper.rb", __dir__))
+    without_qualified = source.gsub("::RecordingStudioVideo::Video", "")
+
+    refute_match(/\bVideo\b/, without_qualified)
+    assert_includes source, "::RecordingStudioVideo::Video"
+  end
+
+  def test_after_initialize_initializer_does_not_call_register_integrations
+    source = File.read(File.expand_path("../lib/recording_studio_video/engine.rb", __dir__))
+    after_initialize = source[/initializer "recording_studio_video.after_initialize".*?^    end/m]
+    prepare = source[/initializer "recording_studio_video.prepare".*?^    end/m]
+
+    refute_includes after_initialize, "register_integrations!"
+    assert_includes prepare, "register_integrations!"
+    assert_includes prepare, "to_prepare"
+  end
+
   def test_example_capability_wraps_include_for_and_is_not_enabled_globally
     source = File.read(File.expand_path("../lib/recording_studio_video/capabilities/example.rb", __dir__))
 

@@ -6,12 +6,13 @@
 
 ### Fixed
 
-- `RecordingStudioVideo::Api` qualifies `::RecordingStudioVideo::Video` (and `::RecordingStudioApi`) so API registration does not depend on a top-level `Video` constant. Hosts no longer need an application `const_set` workaround for boot-time registration.
+- `RecordingStudioVideo::Api` and `RecordingStudioVideo::Helper` qualify `::RecordingStudioVideo::Video` (and `::RecordingStudioApi` in Api) so resolution does not depend on a top-level `Video` constant.
+- `register_integrations!` runs only from `config.to_prepare`, not from the engine `after_initialize` initializer. Calling it during that initializer NameErrors in hosts that already load `RecordingStudioApi`, because the main autoloader is not ready yet for `::RecordingStudioVideo::Video`.
 
 ### Upgrade notes
 
 - Bump to `0.2.2`. No migration.
-- If the host defined a top-level `Video` constant only so this gem's API registration could resolve, that alias can be removed.
+- Hosts that early-`require`d the video model and/or `const_set` a top-level `Video` only so API registration could boot can remove both workarounds once on this version.
 
 ## [0.2.1] - 2026-10-13
 
