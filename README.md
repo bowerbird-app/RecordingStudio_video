@@ -19,7 +19,7 @@ gem "flat_pack", ">= 0.1.135"
 gem "recording_studio_video", "~> 0.2.2"
 ```
 
-This repository pins GitHub tags `v4.6.0`, `v0.18.0`, `v0.10.0`, `v0.1.3`, and `v0.1.198` for Recording Studio, Accessible, Trashable, External Embed, and Flatpack. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` from `to_prepare` (not the engine `after_initialize` initializer); a top-level `Video` constant and an early model `require` are not required.
+This repository pins GitHub tags `v4.6.0`, `v0.18.0`, `v0.10.0`, `v0.1.3`, and `v0.1.198` for Recording Studio, Accessible, Trashable, External Embed, and Flatpack. The dummy app also pins `recording_studio_api` `v0.10.0` (development/test only, `require: false`) with Metrics `v0.3.1` and Root Switchable `v0.9.4` so registration tests can use the real API registry. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` from `to_prepare` (not the engine `after_initialize` initializer); a top-level `Video` constant and an early model `require` are not required.
 
 Then install the config and the table.
 

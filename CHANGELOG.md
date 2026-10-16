@@ -12,7 +12,7 @@
 ### Upgrade notes
 
 - Bump to `0.2.2`. No migration.
-- Hosts that early-`require`d the video model and/or `const_set` a top-level `Video` only so API registration could boot can remove both workarounds once on this version.
+- featured_in (and similar hosts that load `RecordingStudioApi`): bump this gem to `0.2.2`, confirm the app boots, then delete the whole host `recording_studio_video_api_constant` initializer (including the early model `require`). Do not remove that initializer on `<= 0.2.1`.
 
 ## [0.2.1] - 2026-10-13
 
