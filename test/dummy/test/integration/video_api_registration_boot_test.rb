@@ -12,9 +12,14 @@ require "test_helper"
 # on the real to_prepare path (not a hand-called register_integrations!).
 # Moving registration back onto after_initialize makes this runner exit non-zero.
 class VideoApiRegistrationBootTest < ActiveSupport::TestCase
+  REPO_ROOT = File.expand_path("../../../..", __dir__)
+  DUMMY_ROOT = File.expand_path("../..", __dir__)
+  DUMMY_GEMFILE = File.join(REPO_ROOT, "test/dummy/Gemfile")
+
   test "rails runner boot registers Video via to_prepare with RecordingStudioApi loaded" do
     script = <<~'RUBY'
       begin
+        puts "VIDEO_API_BOOT_RUNNER_START"
         raise "top-level Video must not exist" if Object.const_defined?(:Video, false)
         raise "RecordingStudioApi missing" unless defined?(::RecordingStudioApi)
 
@@ -33,19 +38,28 @@ class VideoApiRegistrationBootTest < ActiveSupport::TestCase
         RecordingStudioApi.configuration.validate!
         puts "VIDEO_API_BOOT_OK"
       ensure
-        RecordingStudioApi.prepare_recordable_registries_for_reload!
+        RecordingStudioApi.prepare_recordable_registries_for_reload! if defined?(::RecordingStudioApi)
+        puts "VIDEO_API_BOOT_RUNNER_END"
       end
     RUBY
 
+    puts "===== VIDEO_API_BOOT_SUBPROCESS_BEGIN ====="
     output = IO.popen(
-      { "RECORDING_STUDIO_VIDEO_LOAD_API" => "1" },
-      %w[bundle exec bin/rails runner] + [script],
-      chdir: Rails.root.to_s,
+      {
+        "RECORDING_STUDIO_VIDEO_LOAD_API" => "1",
+        "BUNDLE_GEMFILE" => DUMMY_GEMFILE
+      },
+      [ "bundle", "exec", File.join(DUMMY_ROOT, "bin/rails"), "runner", script ],
+      chdir: DUMMY_ROOT,
       err: %i[child out]
     ) { |io| io.read }
+    puts output
+    puts "===== VIDEO_API_BOOT_SUBPROCESS_END status=#{$?.exitstatus} ====="
 
-    assert_equal true, $?.success?, output
+    assert_predicate $?, :success?, output
+    assert_includes output, "VIDEO_API_BOOT_RUNNER_START"
     assert_includes output, "VIDEO_API_BOOT_OK"
+    assert_includes output, "VIDEO_API_BOOT_RUNNER_END"
     refute Object.const_defined?(:Video, false)
     refute defined?(::RecordingStudioApi)
   end
