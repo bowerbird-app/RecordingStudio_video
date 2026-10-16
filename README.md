@@ -16,7 +16,7 @@ Add the gem next to Recording Studio, External Embed, and Flatpack.
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_external_embed", "~> 0.1.1"
 gem "flat_pack", ">= 0.1.135"
-gem "recording_studio_video", "~> 0.2.2"
+gem "recording_studio_video", "~> 0.2.5"
 ```
 
 This repository pins GitHub tags `v4.6.0`, `v0.18.0`, `v0.10.0`, `v0.1.3`, and `v0.1.198` for Recording Studio, Accessible, Trashable, External Embed, and Flatpack. The dummy app also pins `recording_studio_api` `v0.11.2` (development/test only, `require: false`; load at boot with `RECORDING_STUDIO_VIDEO_LOAD_API=1`). That API gem requires Metrics 0.3.x, so the dummy pins Metrics `v0.3.1` while the root Gemfile keeps Metrics `v0.2.0` (Root Switchable stays `v0.9.0` in both). This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` from `to_prepare` (not the engine `after_initialize` initializer); a top-level `Video` constant and an early model `require` are not required.

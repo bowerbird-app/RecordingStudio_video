@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [0.2.2] - 2026-10-16
+## [0.2.5] - 2026-10-16
 
 ### Fixed
 
@@ -11,8 +11,8 @@
 
 ### Upgrade notes
 
-- Bump to `0.2.2`. No migration.
-- featured_in (and similar hosts that load `RecordingStudioApi`): bump this gem to `0.2.2`, confirm the app boots, then delete the whole host `recording_studio_video_api_constant` initializer (including the early model `require`). Do not remove that initializer on `<= 0.2.1`.
+- Bump to `0.2.5` (above existing tags `v0.2.2`–`v0.2.4`). No migration.
+- featured_in (and similar hosts that load `RecordingStudioApi`): bump this gem to `0.2.5`, confirm the app boots, then delete the whole host `recording_studio_video_api_constant` initializer (including the early model `require`). Do not remove that initializer on older tags (including `v0.2.2`–`v0.2.4`).
 
 ## [0.2.1] - 2026-10-13
 
@@ -78,7 +78,7 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.2...HEAD
-[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.1...v0.2.2
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.4...v0.2.5
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0
