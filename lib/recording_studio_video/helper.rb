@@ -21,17 +21,17 @@ module RecordingStudioVideo
 
     def recording_studio_video_fields(video)
       render "recording_studio_video/fields",
-             fields: safe_join(Video::WRITABLE.map { |name| video_field(video, name) })
+             fields: safe_join(::RecordingStudioVideo::Video::WRITABLE.map { |name| video_field(video, name) })
     end
 
     private
 
     def video_subject(subject)
-      return subject if subject.is_a?(Video)
+      return subject if subject.is_a?(::RecordingStudioVideo::Video)
       return unless subject.is_a?(RecordingStudio::Recording)
 
       recordable = subject.recordable
-      recordable if recordable.is_a?(Video)
+      recordable if recordable.is_a?(::RecordingStudioVideo::Video)
     end
 
     def video_field(video, name)
