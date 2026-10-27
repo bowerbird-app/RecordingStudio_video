@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-27
+
+### Changed
+
+- Require `recording_studio` >= 6.1.0 and `flat_pack` >= 0.1.315.
+- Development and dummy Gemfiles pin Recording Studio `v6.1.0` and Flatpack `1fcbafe94f8eb118f0a22182f63f5110fcc97a56` (0.1.319).
+- `RecordingStudioVideo::Configuration#layout` defaults to `nil` and is validated with `RecordingStudio::Layout.accept`.
+- The engine controller and the dummy controller call `recording_studio_layout`. The shared default layout draws one page title from `content_for :title` and `content_for :subtitle`.
+- Dummy back and close use `flat_pack_page_nav`. Sign out uses `register_page_nav`. The root switch stays in `recording_studio_page_nav_right`.
+
+### Upgrade notes
+
+- Hosts need Recording Studio 6.1.0 or newer and Flatpack 0.1.315 or newer.
+- Set the page heading with `content_for :title` and `content_for :subtitle`. Do not render a second `FlatPack::PageTitle` for that same heading.
+- `RecordingStudioVideo.configuration.layout` overrides the layout for this engine's controllers. `nil` keeps the host Recording Studio layout, then `recording_studio/default_layout`.
+
 ## [0.2.5] - 2026-10-16
 
 ### Fixed
@@ -78,7 +94,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...v0.3.0
 [0.2.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.4...v0.2.5
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0

@@ -65,6 +65,15 @@ class ConfigurationTest < Minitest::Test
     assert_equal 1, result.fetch(:hooks_registered).fetch(:after_service)
   end
 
+  def test_layout_defaults_to_nil_and_accepts_a_layout_name
+    assert_nil @configuration.layout
+
+    @configuration.layout = "application"
+
+    assert_equal "application", @configuration.layout
+    assert_raises(ArgumentError) { @configuration.layout = " " }
+  end
+
   def test_configure_without_block_is_safe
     RecordingStudioVideo.configure
 
