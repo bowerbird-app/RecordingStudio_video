@@ -2,7 +2,9 @@
   <%= hidden_field_tag :workspace_id, @workspace_id %>
   <%= recording_studio_video_fields(@video) %>
   <% if @video.content_type == "video" %>
-    <%= recording_studio_video_player(@video) %>
+    <div class="mt-4">
+      <%= recording_studio_video_player(@video) %>
+    </div>
   <% end %>
   <div class="mt-4 flex justify-start gap-3">
     <%= render FlatPack::Button::Component.new(text: "Save", type: "submit", style: :default, size: :md) %>
