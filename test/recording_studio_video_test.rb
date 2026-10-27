@@ -191,6 +191,8 @@ class RecordingStudioVideoTest < Minitest::Test
 
     assert_includes controller_source, "recording_studio_layout"
     assert_includes controller_source, '"application" if devise_controller?'
+    assert_includes controller_source, "def application_layout"
+    assert_includes controller_source, "recording_studio_resolved_layout"
     refute_includes controller_source, "UsesDefaultLayout"
     refute_includes controller_source, '"recording_studio/default_layout"'
     refute_includes controller_source, "flat_pack_sidebar"

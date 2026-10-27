@@ -6,9 +6,7 @@
 # Bundler loads gemspecs so this app can resolve 6.1.0.
 module WidenRecordingStudioRequirement
   def add_dependency(name, *requirements)
-    if name.to_s == "recording_studio" && !allows_recording_studio_six?(requirements)
-      requirements = [">= 6.1.0"]
-    end
+    requirements = [">= 6.1.0"] if name.to_s == "recording_studio" && !allows_recording_studio_six?(requirements)
 
     super
   end

@@ -16,6 +16,14 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # Root Switchable is configured with layout: :application_layout, so it
+  # calls this method. The name stays. The value comes from the resolver.
+  def application_layout
+    return "application" if devise_controller?
+
+    recording_studio_resolved_layout
+  end
+
   def set_current_actor
     Current.actor = current_user
   end

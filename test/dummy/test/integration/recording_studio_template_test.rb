@@ -8,7 +8,7 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
     assert_equal :application_layout, RecordingStudioRootSwitchable.configuration.layout
     assert_includes ApplicationController.ancestors, RecordingStudio::RootSwitchable::ControllerSupport
     assert_includes ApplicationController.ancestors, RecordingStudio::ControllerLayout
-    assert ApplicationController.private_method_defined?(:recording_studio_resolved_layout)
+    assert ApplicationController.method_defined?(:recording_studio_resolved_layout)
   end
 
   test "dummy app validates recordable declarations" do
