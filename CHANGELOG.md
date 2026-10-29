@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-29
+
+### Changed
+
+- Ignore generated SimpleCov output in `coverage/` and `test/dummy/coverage/` (untracked; files stay on disk).
+- Copilot instructions name this gem (`recording_studio_video`) instead of the gem template.
+- `UPDATE_SUMMARY.md` describes the current video gem. `UPGRADING.md` lists gemspec requirements and host install steps.
+- Dummy starter docs copy names this video gem in everyday words.
+
+### Upgrade notes
+
+- Bump to `0.3.1`. No migration. No gemspec or API change.
+
 ## [0.3.0] - 2026-10-27
 
 ### Changed
@@ -18,6 +31,16 @@
 - Set the page heading with `content_for :title` and `content_for :subtitle`. Do not render a second `FlatPack::PageTitle` for that same heading.
 - `RecordingStudioVideo.configuration.layout` overrides the layout for this engine's controllers. `nil` keeps the host Recording Studio layout, then `recording_studio/default_layout`.
 
+## [0.2.6] - 2026-10-19
+
+### Changed
+
+- Dummy pin: `recording_studio_trashable` `v0.11.0` (#13).
+
+### Upgrade notes
+
+- Bump to `0.2.6` if you use the dummy Trashable pin. No migration.
+
 ## [0.2.5] - 2026-10-16
 
 ### Fixed
@@ -29,6 +52,36 @@
 
 - Bump to `0.2.5` (above existing tags `v0.2.2`–`v0.2.4`). No migration.
 - featured_in (and similar hosts that load `RecordingStudioApi`): bump this gem to `0.2.5`, confirm the app boots, then delete the whole host `recording_studio_video_api_constant` initializer (including the early model `require`). Do not remove that initializer on older tags (including `v0.2.2`–`v0.2.4`).
+
+## [0.2.4] - 2026-10-14
+
+### Changed
+
+- Dummy pin: `recording_studio_accessible` `v0.18.0` (#12).
+
+### Upgrade notes
+
+- Bump to `0.2.4` if you follow the dummy Accessible pin. No migration.
+
+## [0.2.3] - 2026-10-14
+
+### Changed
+
+- Dummy/development pin: `recording_studio` `v4.6.0` (#11).
+
+### Upgrade notes
+
+- Bump to `0.2.3` if you follow that Recording Studio pin. No migration. Later tags require Recording Studio 6.1.0.
+
+## [0.2.2] - 2026-10-13
+
+### Changed
+
+- Dummy pins: `recording_studio_accessible` `v0.17.0` and `recording_studio_root_switchable` `v0.9.0` (#9).
+
+### Upgrade notes
+
+- Bump to `0.2.2` if you follow those dummy pins. No migration.
 
 ## [0.2.1] - 2026-10-13
 
@@ -71,6 +124,48 @@
 - Hosts override field labels/hint by defining the same nested keys in their own `config/locales`. Missing keys are not masked with English `default:`.
 - Recordable labels (`Video` / `Videos`), generator CLI text, developer `ArgumentError`s, ActiveModel presence (`can't be blank`), URL validation messages, and External Embed provider messages stay untranslated in this gem.
 
+## [0.1.4] - 2026-10-12
+
+### Changed
+
+- Dummy pin: `recording_studio_accessible` `v0.15.0` (#7).
+- Dummy/development pin: `recording_studio` `v4.5.0` (#6).
+- Dummy pin: `recording_studio_root_switchable` `v0.8.0` (#5).
+
+### Upgrade notes
+
+- Bump to `0.1.4` if you follow those pins. No migration.
+
+## [0.1.3] - 2026-10-09
+
+### Changed
+
+- Dummy pins for i18n gem releases: `recording_studio_accessible` and `recording_studio_root_switchable` (#4).
+
+### Upgrade notes
+
+- Bump to `0.1.3` if you follow those dummy pins. No migration.
+
+## [0.1.2] - 2026-10-09
+
+### Changed
+
+- Dummy/development pin: `recording_studio` `v4.4.0` (#3).
+
+### Upgrade notes
+
+- Bump to `0.1.2` if you follow that Recording Studio pin. No migration.
+
+## [0.1.1] - 2026-10-08
+
+### Changed
+
+- Dummy/development pin: `recording_studio` `v4.3.0` (#2).
+
+### Upgrade notes
+
+- Bump to `0.1.1` if you follow that Recording Studio pin. No migration.
+
 ## 0.1.0 - 2026-10-06
 
 First release.
@@ -94,8 +189,17 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...v0.3.0
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.6...v0.3.0
+[0.2.6]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.4...v0.2.5
+[0.2.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.3...v0.2.4
+[0.2.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.4...v0.2.0
+[0.1.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.1.0...v0.1.1
