@@ -26,7 +26,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: "Install"
     assert_includes response.body, "Step 1"
-    assert_includes response.body, "Provide one section title for each step"
+    assert_includes response.body, "Add the gem, then generate the install and the table."
     assert_includes response.body, "# Put the step instruction here."
   end
 
@@ -34,7 +34,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     get docs_config_path
     assert_response :success
     assert_select "h1", text: "Config"
-    expected_placeholder = "Replace this placeholder with the configuration settings your generated gem exposes."
+    expected_placeholder = "What this demo sets for videos."
 
     assert_includes response.body, expected_placeholder
     assert_includes response.body, "# Add the config settings for the gem here."
@@ -50,7 +50,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Recordable types"
     assert_includes(
       response.body,
-      "The list below comes from RecordingStudio.recordable_declarations and parent/root introspection."
+      "What this demo can hold, and where each kind can live."
     )
     assert_includes response.body, "Workspace"
     assert_includes response.body, "Folder"
@@ -108,7 +108,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Methods"
     assert_includes response.body, "Document the public methods your addon exposes."
     assert_includes response.body, "Example method"
-    assert_includes response.body, "recordingstudio_addon.example_method"
+    assert_includes response.body, "Save a video with a title, URL, and description."
     assert_includes response.body, "# Explain what this method does before the example."
     assert_includes response.body, "Provide one section title and codeblock for each method"
   end

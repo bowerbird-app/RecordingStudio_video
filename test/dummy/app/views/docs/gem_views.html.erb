@@ -5,7 +5,7 @@
 ) %>
 
 <div class="flex w-full flex-col gap-6">
-  <% view_rows = Array(@engine_views).map { |view_path| { path: view_path, source: "Gem engine" } } %>
+  <% view_rows = Array(@engine_views).map { |view_path| { path: view_path, source: "Video gem" } } %>
 
   <%= render FlatPack::Table::Component.new(data: view_rows, class: "text-sm") do |table| %>
     <% table.column(title: "View path") { |view| view[:path] } %>
