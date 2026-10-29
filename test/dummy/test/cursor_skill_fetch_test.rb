@@ -15,6 +15,8 @@ class CursorSkillFetchTest < ActiveSupport::TestCase
     assert_includes script, "contents/rules"
     assert_includes gitignore, ".cursor/skills/"
     assert_includes gitignore, ".cursor/rules/"
+    assert_includes gitignore, "coverage/"
+    assert_includes gitignore, "test/dummy/coverage/"
     refute_includes script, "cursor/plugins"
     refute_includes script, "poteto-mode"
     refute_includes script, "pstack"
@@ -22,8 +24,8 @@ class CursorSkillFetchTest < ActiveSupport::TestCase
     assert_includes script, 'RULES_DIR="${ROOT}/.cursor/rules"'
   end
 
-  test "gem version stays 0.3.0 and gemspec still excludes .cursor" do
-    assert_equal "0.3.0", RecordingStudioVideo::VERSION
+  test "gem version stays 0.3.1 and gemspec still excludes .cursor" do
+    assert_equal "0.3.1", RecordingStudioVideo::VERSION
 
     spec = Gem::Specification.load(RecordingStudioVideo::Engine.root.join("recording_studio_video.gemspec").to_s)
     cursor_files = spec.files.select { |path| path == ".cursor" || path.split("/").include?(".cursor") }
