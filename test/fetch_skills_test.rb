@@ -161,7 +161,7 @@ class FetchSkillsTest < Minitest::Test
     assert_includes gitignore, ".cursor/skills/"
     assert_includes gitignore, "coverage/"
     assert_includes gitignore, "test/dummy/coverage/"
-    assert_equal "0.3.1", RecordingStudioVideo::VERSION
+    assert_equal "0.4.0", RecordingStudioVideo::VERSION
 
     tracked, status = Open3.capture2("git", "-C", root, "ls-files", "--", ".cursor/rules")
     assert_equal 0, status.exitstatus

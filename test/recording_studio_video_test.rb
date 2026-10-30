@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.3.1", ::RecordingStudioVideo::VERSION
+    assert_equal "0.4.0", ::RecordingStudioVideo::VERSION
   end
 
   def test_engine_exists
@@ -16,7 +16,7 @@ class RecordingStudioVideoTest < Minitest::Test
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", "~> 0.1.1"'
-    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.315"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_video"
   end
 
@@ -52,7 +52,7 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.1.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.1.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
-    flatpack_pin = 'github: "bowerbird-app/flatpack", ref: "1fcbafe94f8eb118f0a22182f63f5110fcc97a56"'
+    flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.331"'
     assert_includes root_gemfile, flatpack_pin
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
@@ -271,6 +271,13 @@ class RecordingStudioVideoTest < Minitest::Test
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
     refute_includes readme, "recording_studio/v3.0.0"
+  end
+
+  def test_video_fields_partial_uses_flatpack_stack
+    fields_source = File.read(File.expand_path("../app/views/recording_studio_video/_fields.html.erb", __dir__))
+
+    assert_includes fields_source, "FlatPack::Stack::Component.new"
+    refute_includes fields_source, "flex flex-col gap-4"
   end
 
   def test_dummy_home_page_lists_videos_for_a_workspace
