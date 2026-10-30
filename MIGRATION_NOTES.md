@@ -5,7 +5,7 @@
 - Ruby 3.3 or newer
 - Rails 8.1 or newer
 - Recording Studio >= 6.1.0 (gemspec). Development and dummy Gemfiles pin GitHub tag `v6.1.0`.
-- Flatpack >= 0.1.315 (gemspec). Development and dummy Gemfiles pin `1fcbafe94f8eb118f0a22182f63f5110fcc97a56` (0.1.319).
+- Flatpack >= 0.1.331 (gemspec). Development and dummy Gemfiles pin GitHub tag `v0.1.331`.
 - Accessible dummy tag `v0.18.0`, Trashable dummy tag `v0.11.0` (`require: false`; query-only for Accessible), Root Switchable `v0.9.0`, Cache dummy tag `v0.5.0`, External Embed `v0.1.3`
 - Root Switchable `v0.10.0` is not pinned. Its dropdown calls `button_attributes`, which Flatpack 0.1.319 removed. `test/dummy/config/initializers/flat_pack_legacy_kwargs.rb` translates the v0.9.0 switch page's removed `anchor_url`, `anchor_label`, and card `style:` arguments.
 - Those sibling tags still require `recording_studio` below 5. `test/support/widen_recording_studio_requirement.rb` is loaded from both Gemfiles and from `test/dummy/config/boot.rb` before `Bundler.setup`, and rewrites that requirement to `>= 6.1.0`.

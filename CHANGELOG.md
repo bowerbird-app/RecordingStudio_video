@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-30
+
+### Changed
+
+- Require `flat_pack` >= 0.1.331. Development and dummy Gemfiles pin GitHub tag `v0.1.331`.
+- Video form fields wrap in `FlatPack::Stack::Component` with the default gap (`:md`).
+
+### Upgrade notes
+
+- Bump to `0.4.0`. Hosts need Flatpack 0.1.331 or newer. Rebuild host Tailwind so `flex-col` and `gap-[var(--stack-gap-md)]` exist if the host did not already use them. Reload kit CSS. No migration.
+
 ## [0.3.1] - 2026-10-29
 
 ### Changed
@@ -189,7 +200,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.6...v0.3.0
 [0.2.6]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.5...v0.2.6
