@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Dummy video index wraps workspaces in `FlatPack::Stack` (`gap: :lg`, slightly tighter than the old `gap-8`) and each workspace section in `Stack` (`gap: :md`). Dummy form fields wrap in `Stack` (`gap: :md`) and Save/Cancel in `Cluster` (`gap: :sm`, slightly tighter than the old `gap-3`).
+
 ## [0.4.0] - 2026-10-30
 
 ### Changed

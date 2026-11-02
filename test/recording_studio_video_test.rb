@@ -287,9 +287,17 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes view_source, "dummy_page_nav"
     assert_includes view_source, "recording_studio_video_player"
     assert_includes view_source, "FlatPack::Button::Component"
+    assert_includes view_source, "FlatPack::Stack::Component.new(gap: :lg"
+    assert_includes view_source, "FlatPack::Stack::Component.new(gap: :md)"
+    refute_includes view_source, "flex w-full flex-col gap-8"
+    refute_includes view_source, 'class="flex flex-col gap-4"'
     assert_includes form_source, "recording_studio_video_fields"
+    assert_includes form_source, "FlatPack::Stack::Component.new(gap: :md)"
+    assert_includes form_source, "FlatPack::Cluster::Component.new(gap: :sm)"
     assert_includes form_source, 'text: "Cancel"'
     assert_includes form_source, 'text: "Save"'
+    refute_includes form_source, 'class="mt-4"'
+    refute_includes form_source, "mt-4 flex justify-start gap-3"
     refute_includes view_source, "Template Demo"
     refute_includes view_source, "recordable type"
     refute_includes form_source, "recordable type"

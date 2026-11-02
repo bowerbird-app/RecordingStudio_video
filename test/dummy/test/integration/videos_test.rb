@@ -31,6 +31,9 @@ class VideosTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "video[description]"
     assert_includes response.body, "flex flex-col"
     assert_includes response.body, "gap-[var(--stack-gap-md)]"
+    assert_includes response.body, "flex flex-wrap"
+    assert_includes response.body, "gap-[var(--stack-gap-sm)]"
+    refute_includes response.body, "mt-4 flex justify-start gap-3"
     assert_includes response.body, "Cancel"
     assert_includes response.body, "Save"
     assert_operator response.body.index(">Save<"), :<, response.body.index(">Cancel<")
@@ -84,6 +87,8 @@ class VideosTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, @workspace.name
+    assert_includes response.body, "gap-[var(--stack-gap-lg)]"
+    refute_includes response.body, "flex w-full flex-col gap-8"
     assert_includes response.body, "&lt;script&gt;alert(1)&lt;/script&gt;"
     assert_includes response.body, "&quot;&gt;&lt;b&gt;zoo&lt;/b&gt;"
     assert_includes response.body, "recording-studio-external-embed"

@@ -1,49 +1,51 @@
 <% dummy_page_nav(title: "Videos", subtitle: (@roots.empty? ? "No workspace yet." : nil)) %>
 
-<div class="flex w-full flex-col gap-8">
+<%= render FlatPack::Stack::Component.new(gap: :lg, class: "w-full") do %>
   <% @roots.each do |root| %>
     <% workspace = root.recordable %>
-    <section class="flex flex-col gap-4">
-      <%= render FlatPack::PageTitle::Component.new(
-        title: workspace.name,
-        subtitle: "Videos",
-        variant: :h2
-      ) %>
-
-      <div class="self-start">
-        <%= render FlatPack::Button::Component.new(
-          text: "New video",
-          href: new_video_path(workspace_id: root.id),
-          style: :primary,
-          size: :md
+    <section>
+      <%= render FlatPack::Stack::Component.new(gap: :md) do %>
+        <%= render FlatPack::PageTitle::Component.new(
+          title: workspace.name,
+          subtitle: "Videos",
+          variant: :h2
         ) %>
-      </div>
 
-      <% videos = root.videos.to_a %>
-      <% if videos.empty? %>
-        <%= render FlatPack::EmptyState::Component.new(
-          title: "No videos yet",
-          description: "Add a video with a link from a supported provider."
-        ) %>
-      <% else %>
-        <% videos.each do |recording| %>
-          <% video = recording.recordable %>
-          <%= render FlatPack::PageTitle::Component.new(
-            title: video.title.presence || "Untitled video",
-            subtitle: video.description,
-            variant: :h3
+        <div class="self-start">
+          <%= render FlatPack::Button::Component.new(
+            text: "New video",
+            href: new_video_path(workspace_id: root.id),
+            style: :primary,
+            size: :md
           ) %>
-          <%= recording_studio_video_player(recording) %>
-          <div class="self-start">
-            <%= render FlatPack::Button::Component.new(
-              text: "Edit",
-              href: edit_video_path(recording),
-              style: :ghost,
-              size: :md
+        </div>
+
+        <% videos = root.videos.to_a %>
+        <% if videos.empty? %>
+          <%= render FlatPack::EmptyState::Component.new(
+            title: "No videos yet",
+            description: "Add a video with a link from a supported provider."
+          ) %>
+        <% else %>
+          <% videos.each do |recording| %>
+            <% video = recording.recordable %>
+            <%= render FlatPack::PageTitle::Component.new(
+              title: video.title.presence || "Untitled video",
+              subtitle: video.description,
+              variant: :h3
             ) %>
-          </div>
+            <%= recording_studio_video_player(recording) %>
+            <div class="self-start">
+              <%= render FlatPack::Button::Component.new(
+                text: "Edit",
+                href: edit_video_path(recording),
+                style: :ghost,
+                size: :md
+              ) %>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
     </section>
   <% end %>
-</div>
+<% end %>
