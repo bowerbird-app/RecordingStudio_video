@@ -4,9 +4,9 @@ This gem requires:
 
 - Ruby `>= 3.3.0`
 - Rails `~> 8.1.0`
-- `recording_studio` `>= 6.1.0`
+- `recording_studio` `>= 6.3.0`
 - `recording_studio_external_embed` `~> 0.1.1`
-- `flat_pack` `>= 0.1.331`
+- `flat_pack` `>= 0.1.341`
 
 Those floors match `recording_studio_video.gemspec`. Development and dummy Gemfiles may pin newer tags; hosts only need the gemspec ranges.
 
@@ -20,6 +20,6 @@ Those floors match `recording_studio_video.gemspec`. Development and dummy Gemfi
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-## This release (0.4.0)
+## This release (0.5.0)
 
-Hosts need Flatpack 0.1.331 or newer. Bump the gem to `0.4.0`. Rebuild host Tailwind so Stack gap classes exist. No migration. The field helper still renders the same three inputs; the wrapper is `FlatPack::Stack::Component` instead of `flex flex-col gap-4`.
+Hosts need Recording Studio 6.3.0 or newer and Flatpack 0.1.341 or newer. Bump the gem to `0.5.0`. Rebuild host Tailwind and reload kit CSS. No migration. `RecordingStudioVideo.configuration.layout` stays `nil` unless a host sets it.

@@ -4,19 +4,21 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.4.0", ::RecordingStudioVideo::VERSION
+    assert_equal "0.5.0", ::RecordingStudioVideo::VERSION
   end
 
   def test_engine_exists
     assert_kind_of Class, ::RecordingStudioVideo::Engine
   end
 
-  def test_gemspec_requires_recording_studio_6_1
+  def test_gemspec_requires_recording_studio_6_3
     gemspec = File.read(File.expand_path("../recording_studio_video.gemspec", __dir__))
 
-    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.3.0"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", "~> 0.1.1"'
-    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.341"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0"'
+    refute_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_video"
   end
 
@@ -44,28 +46,28 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes install_script, "fetch-skills.sh"
   end
 
-  def test_dummy_gemfile_pins_recording_studio_6_1_and_flatpack_ref
+  def test_dummy_gemfile_pins_recording_studio_6_3_and_flatpack_ref
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.1.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.1.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
-    flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.331"'
+    flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.341"'
     assert_includes root_gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0", require: false'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.9.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2", require: false'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.3.1"'
     assert_includes gemfile,
                     'github: "bowerbird-app/RecordingStudio_api", tag: "v0.11.2", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.9.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"'
     assert_includes gemfile, flatpack_pin
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
     refute_includes gemfile, 'tag: "v4.7.0"'
@@ -188,7 +190,15 @@ class RecordingStudioVideoTest < Minitest::Test
   def test_dummy_app_uses_recording_studio_default_layout
     application_controller_path = File.expand_path("dummy/app/controllers/application_controller.rb", __dir__)
     controller_source = File.read(application_controller_path)
+    engine_controller = File.read(
+      File.expand_path("../app/controllers/recording_studio_video/application_controller.rb", __dir__)
+    )
+    configuration = File.read(File.expand_path("../lib/recording_studio_video/configuration.rb", __dir__))
 
+    assert_includes engine_controller, "recording_studio_layout { RecordingStudioVideo.configuration.layout }"
+    refute_includes engine_controller, "UsesDefaultLayout"
+    refute_includes engine_controller, '"recording_studio/default_layout"'
+    assert_includes configuration, "RecordingStudio::Layout.accept(value)"
     assert_includes controller_source, "recording_studio_layout"
     assert_includes controller_source, '"application" if devise_controller?'
     assert_includes controller_source, "def application_layout"
@@ -291,9 +301,25 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes view_source, "FlatPack::Stack::Component.new(gap: :md)"
     refute_includes view_source, "flex w-full flex-col gap-8"
     refute_includes view_source, 'class="flex flex-col gap-4"'
+    helper_source = File.read(File.expand_path("dummy/app/helpers/application_helper.rb", __dir__))
+    assert_includes helper_source, "with_back"
+    refute_includes helper_source, "back_href:"
+    refute File.exist?(File.expand_path("dummy/config/initializers/flat_pack_legacy_kwargs.rb", __dir__))
+    refute File.exist?(File.expand_path("../UPDATE_SUMMARY.md", __dir__))
+    refute File.exist?(File.expand_path("../MIGRATION_NOTES.md", __dir__))
+    refute Dir.exist?(File.expand_path("../docs/gem_template", __dir__))
+
+    widen = File.read(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
+    assert_includes widen, '">= 6.3.0"'
+    dummy_gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
+    assert_includes File.read(File.expand_path("../Gemfile", __dir__)),
+                    "test/support/widen_recording_studio_requirement"
+    assert_includes dummy_gemfile, "../support/widen_recording_studio_requirement"
+
     assert_includes form_source, "recording_studio_video_fields"
     assert_includes form_source, "FlatPack::Stack::Component.new(gap: :md)"
-    assert_includes form_source, "FlatPack::Cluster::Component.new(gap: :sm)"
+    assert_includes form_source, "FlatPack::ButtonGroup::Component.new(variant: :outlined, collapse: false)"
+    refute_includes form_source, "FlatPack::Cluster::Component"
     assert_includes form_source, 'text: "Cancel"'
     assert_includes form_source, 'text: "Save"'
     refute_includes form_source, 'class="mt-4"'
