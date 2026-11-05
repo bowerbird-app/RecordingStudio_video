@@ -2,9 +2,19 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-05
+
 ### Changed
 
-- Dummy video index wraps workspaces in `FlatPack::Stack` (`gap: :lg`, slightly tighter than the old `gap-8`) and each workspace section in `Stack` (`gap: :md`). Dummy form fields wrap in `Stack` (`gap: :md`) and Save/Cancel in `Cluster` (`gap: :sm`, slightly tighter than the old `gap-3`).
+- Require `recording_studio` >= 6.3.0 and `flat_pack` >= 0.1.341. Development Gemfile pins Recording Studio `v6.3.0`, Accessible `v0.24.1`, Trashable `v0.12.2`, Metrics `v0.7.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`, and Flatpack `v0.1.341`. Dummy keeps Metrics `v0.3.1` and API `v0.11.2` so that boot test still resolves without adding Logs. `recording_studio_external_embed` stays `~> 0.1.1` (pin `v0.1.3`).
+- `RecordingStudioVideo.configuration.layout` still defaults to `nil` and is validated with `RecordingStudio::Layout.accept`. Engine controllers keep `recording_studio_layout`.
+- Refresh Rails to 8.1.4.1 and the matching security gems (nokogiri, loofah, rails-html-sanitizer).
+- Remove leftover template files `docs/gem_template/`, `UPDATE_SUMMARY.md`, and `MIGRATION_NOTES.md`. Dummy no longer prepends Flatpack PageNav/Card kwargs. Dummy Save/Cancel sit in `FlatPack::ButtonGroup` (`variant: :outlined`).
+
+### Upgrade notes
+
+- Bump to `0.5.0`. Hosts need Recording Studio 6.3.0 or newer and Flatpack 0.1.341 or newer. Rebuild host Tailwind and reload kit CSS. No migration.
+- `RecordingStudioVideo.configuration.layout` stays `nil` unless a host sets it. `nil` uses the host Recording Studio layout, then `recording_studio/default_layout`.
 
 ## [0.4.0] - 2026-10-30
 
@@ -204,7 +214,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.2.6...v0.3.0

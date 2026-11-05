@@ -16,8 +16,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Root Switchable is configured with layout: :application_layout, so it
-  # calls this method. The name stays. The value comes from the resolver.
+  # Host layout helper kept for Devise and any caller that still names it.
   def application_layout
     return "application" if devise_controller?
 

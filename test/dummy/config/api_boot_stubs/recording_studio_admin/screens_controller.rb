@@ -8,7 +8,6 @@
 # when RECORDING_STUDIO_VIDEO_LOAD_API=1 prepends this directory onto
 # $LOAD_PATH in config/application.rb, this stub satisfies that require.
 # It is not a real Admin screen and must not be used outside that boot path.
-# See MIGRATION_NOTES.md.
 module RecordingStudioAdmin
   class ScreensController < ActionController::Base
   end

@@ -5,9 +5,9 @@
     <% if @video.content_type == "video" %>
       <%= recording_studio_video_player(@video) %>
     <% end %>
-    <%= render FlatPack::Cluster::Component.new(gap: :sm) do %>
-      <%= render FlatPack::Button::Component.new(text: "Save", type: "submit", style: :default, size: :md) %>
-      <%= render FlatPack::Button::Component.new(text: "Cancel", href: videos_path, style: :ghost, size: :md) %>
+    <%= render FlatPack::ButtonGroup::Component.new(variant: :outlined, collapse: false) do |group| %>
+      <% group.button(FlatPack::Button::Component.new(text: "Save", type: "submit", style: :default, size: :md)) %>
+      <% group.button(FlatPack::Button::Component.new(text: "Cancel", href: videos_path, style: :ghost, size: :md)) %>
     <% end %>
   <% end %>
 <% end %>
