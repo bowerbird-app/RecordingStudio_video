@@ -7,11 +7,11 @@
 ### Changed
 
 - Dummy videos authorize through Recording Studio Accessible. Index lists `root_recordings_for`; create/edit load a recording then `authorized?` (`:view` to list, `:edit` to write). Missing access is a 404. `ApplicationController` uses `RecordingStudioAccessible::ControllerAuth` (Devise still identifies). Dummy `config.authorize_write` allows `AccessCreationContext` only when the recordable is `RecordingStudio::Access`. Other writes still need Accessible `:edit` on the root. Seeds grant the demo admin on Studio Workspace and Client Workspace, not Private Workspace.
-- Loosen `recording_studio_external_embed` to `>= 0.1.1` (was `~> 0.1.1`). Development and dummy Gemfiles pin External Embed `v0.2.2`, Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, and Metrics `v0.7.3` (root). Dummy does not bundle `recording_studio_api` and does not load a `Gem::Specification` prepend. `recording_studio_api` `v0.11.2` still requires Recording Studio `~> 4.2`; External Embed `v0.2.2` requires `>= 6.1.0`. Dummy Metrics stays `v0.3.1`. Admin stays unpinned here.
+- Loosen `recording_studio_external_embed` to `>= 0.1.1` (was `~> 0.1.1`). Development and dummy Gemfiles pin External Embed `v0.2.2`, Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, and Metrics `v0.7.3`. Dummy bundles `recording_studio_api` `v0.17.1` (`require: false`) plus Logs `v0.7.4` so the Video API boot test can run next to External Embed `v0.2.2` without a `Gem::Specification` prepend. Admin stays unpinned here.
 
 ### Upgrade notes
 
-- Bump to `0.5.1`. Hosts that copy the dummy video screens must grant Accessible roles before those actions succeed. Dummy no longer bundles `recording_studio_api`. No migration.
+- Bump to `0.5.1`. Hosts that copy the dummy video screens must grant Accessible roles before those actions succeed. Dummy development/test bundles `recording_studio_api` `v0.17.1` for the registration boot test. No migration.
 
 ## [0.5.0] - 2026-11-05
 

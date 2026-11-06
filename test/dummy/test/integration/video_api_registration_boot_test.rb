@@ -17,7 +17,6 @@ class VideoApiRegistrationBootTest < ActiveSupport::TestCase
   DUMMY_GEMFILE = File.join(REPO_ROOT, "test/dummy/Gemfile")
 
   test "rails runner boot registers Video via to_prepare with RecordingStudioApi loaded" do
-    skip "dummy does not bundle recording_studio_api v0.11.2 (Recording Studio ~> 4.2) next to External Embed v0.2.2 (>= 6.1.0)"
     script = <<~'RUBY'
       begin
         puts "VIDEO_API_BOOT_RUNNER_START"
