@@ -11,6 +11,7 @@ class AuthorizeWriteTest < ActiveSupport::TestCase
     assert_includes initializer, "AccessCreationContext.allowed?"
     assert_includes initializer, "recordable.is_a?(RecordingStudio::Access)"
     refute_includes initializer, "target = recording || parent_recording || root_recording"
+    refute_includes initializer, "actor.is_a?(User) && actor.persisted?"
     refute_match(/authorize_write\s*=\s*->\(actor:, \*\*\) \{ actor\.is_a\?\(User\) && actor\.persisted\? \}/, initializer)
     refute_match(/authorize_write\s*=\s*->\(actor:, \*\*\) \{ actor\.present\? \}/, initializer)
     refute_includes initializer, "allow_unauthorized_writes = true"

@@ -64,8 +64,6 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.3.1"'
-    assert_includes gemfile,
-                    'github: "bowerbird-app/RecordingStudio_api", tag: "v0.11.2", require: false'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.3"'
@@ -322,12 +320,11 @@ class RecordingStudioVideoTest < Minitest::Test
     refute File.exist?(File.expand_path("../MIGRATION_NOTES.md", __dir__))
     refute Dir.exist?(File.expand_path("../docs/gem_template", __dir__))
 
-    widen = File.read(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
-    assert_includes widen, '">= 6.5.0"'
-    dummy_gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
+    dummy_boot = File.read(File.expand_path("dummy/config/boot.rb", __dir__))
     refute_includes File.read(File.expand_path("../Gemfile", __dir__)),
                     "test/support/widen_recording_studio_requirement"
-    assert_includes dummy_gemfile, "../support/widen_recording_studio_requirement"
+    refute_includes dummy_boot, "widen_recording_studio_requirement"
+    refute File.exist?(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
 
     assert_includes form_source, "recording_studio_video_fields"
     assert_includes form_source, "FlatPack::Stack::Component.new(gap: :md)"

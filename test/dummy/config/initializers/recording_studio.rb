@@ -21,7 +21,6 @@ RecordingStudio.configure do |config|
   # only when the recordable is RecordingStudio::Access. Other types still need
   # Accessible :edit on the root, even inside that context.
   config.authorize_write = lambda { |actor:, root_recording:, recordable:, **|
-    next false unless actor.is_a?(User) && actor.persisted?
     next false unless root_recording
 
     if defined?(RecordingStudio::Access) && recordable.is_a?(RecordingStudio::Access)

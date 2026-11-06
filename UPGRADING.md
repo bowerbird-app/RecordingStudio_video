@@ -22,7 +22,7 @@ The install generator does not mount a route. The host owns the form, the routes
 
 ## This release (0.5.1)
 
-Bump the gem to `0.5.1`. Hosts that still use External Embed 0.1.x keep working; 0.2.x is now allowed. Dummy videos go through Accessible (`authorized?` / `root_recordings_for`) instead of unscoped `Recording.find`. Development pins Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, Metrics `v0.7.3`, and External Embed `v0.2.2`. Dummy API stays `v0.11.2` (Metrics `v0.3.1`) so boot tests do not pull Logs. No migration.
+Bump the gem to `0.5.1`. Hosts that still use External Embed 0.1.x keep working; 0.2.x is now allowed. Dummy videos go through Accessible (`authorized?` / `root_recordings_for`) instead of unscoped `Recording.find`. Development pins Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, Metrics `v0.7.3`, and External Embed `v0.2.2`. Dummy does not bundle `recording_studio_api` (`v0.11.2` still requires Recording Studio `~> 4.2`). Dummy Metrics stays `v0.3.1`. No migration.
 
 ## 0.5.0
 
