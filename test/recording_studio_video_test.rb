@@ -258,6 +258,8 @@ class RecordingStudioVideoTest < Minitest::Test
                     "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\", \"RecordingStudioVideo::Video\" ]"
     assert_includes initializer_source, "config.authorize_write"
     assert_includes initializer_source, "RecordingStudioAccessible.authorized?"
+    assert_includes initializer_source, "recordable.is_a?(RecordingStudio::Access)"
+    refute_includes initializer_source, "target = recording || parent_recording || root_recording"
     refute_includes initializer_source, "config.include_children"
     refute_includes initializer_source, "config.features."
     refute_includes initializer_source, "v3"
@@ -323,7 +325,7 @@ class RecordingStudioVideoTest < Minitest::Test
     widen = File.read(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
     assert_includes widen, '">= 6.5.0"'
     dummy_gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
-    assert_includes File.read(File.expand_path("../Gemfile", __dir__)),
+    refute_includes File.read(File.expand_path("../Gemfile", __dir__)),
                     "test/support/widen_recording_studio_requirement"
     assert_includes dummy_gemfile, "../support/widen_recording_studio_requirement"
 

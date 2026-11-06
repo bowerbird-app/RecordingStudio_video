@@ -14,17 +14,32 @@ RecordingStudio.configure do |config|
   config.actor = -> { Current.actor }
   config.impersonator = -> { Current.impersonator }
 
-  # Core 6.5 fails closed unless a write authorizer is set. Dummy writes go
-  # through Accessible; grant/bootstrap writes use AccessCreationContext.
-  config.authorize_write = lambda do |actor:, recording:, root_recording:, parent_recording:, **|
-    next false if actor.blank?
-    next true if RecordingStudioAccessible::AccessCreationContext.allowed?
+  # Hosts must set authorize_write before Recording Studio core 6.5.0.
+  # Writes fail closed: missing authorize_write raises AuthorizationError;
+  # missing actor raises ActorRequired. A signed-in User is not a write policy.
+  # Access grant/bootstrap writes go through Accessible's AccessCreationContext
+  # only when the recordable is RecordingStudio::Access. Other types still need
+  # Accessible :edit on the root, even inside that context.
+  config.authorize_write = lambda { |actor:, root_recording:, recordable:, **|
+    next false unless actor.is_a?(User) && actor.persisted?
+    next false unless root_recording
 
-    target = recording || parent_recording || root_recording
-    next false if target.blank?
+    if defined?(RecordingStudio::Access) && recordable.is_a?(RecordingStudio::Access)
+      next true if RecordingStudioAccessible::AccessCreationContext.allowed?
 
-    RecordingStudioAccessible.authorized?(actor: actor, recording: target, role: :edit)
-  end
+      RecordingStudioAccessible.authorized?(
+        actor: actor,
+        recording: root_recording,
+        role: :admin
+      )
+    else
+      RecordingStudioAccessible.authorized?(
+        actor: actor,
+        recording: root_recording,
+        role: :edit
+      )
+    end
+  }
 
   # Emit ActiveSupport::Notifications events
   config.event_notifications_enabled = true
