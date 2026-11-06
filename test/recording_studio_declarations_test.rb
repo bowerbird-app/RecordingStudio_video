@@ -9,6 +9,7 @@ require_relative "support/dummy_accessible_grants"
 
 class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
   include DummyAccessibleGrants
+
   test "dummy recordable declarations validate and expose parent/root introspection" do
     assert RecordingStudio.validate_recordable_declarations!
     assert_equal ["Workspace"], RecordingStudio.root_recordable_types

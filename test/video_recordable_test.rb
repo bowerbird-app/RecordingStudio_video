@@ -9,6 +9,7 @@ require_relative "support/dummy_accessible_grants"
 
 class VideoRecordableTest < ActiveSupport::TestCase
   include DummyAccessibleGrants
+
   YOUTUBE_URL = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
   SHORT_URL = "https://youtu.be/jNQXAC9IVRw"
   CANONICAL_URL = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
