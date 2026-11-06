@@ -16,6 +16,7 @@ class VideosTest < ActionDispatch::IntegrationTest
     sign_in @user
     @workspace = Workspace.create!(name: "Video UI #{SecureRandom.hex(4)}")
     @root = RecordingStudio.root_recording_for(@workspace)
+    grant_dummy_owner!(@root, actor: @user)
   end
 
   test "fields render the three inputs and a url error" do

@@ -12,6 +12,33 @@ RecordingStudio.configure do |config|
 
   # Actor resolver for events when no actor is explicitly supplied
   config.actor = -> { Current.actor }
+  config.impersonator = -> { Current.impersonator }
+
+  # Hosts must set authorize_write before Recording Studio core 6.5.0.
+  # Writes fail closed: missing authorize_write raises AuthorizationError;
+  # missing actor raises ActorRequired. A signed-in User is not a write policy.
+  # Access grant/bootstrap writes go through Accessible's AccessCreationContext
+  # only when the recordable is RecordingStudio::Access. Other types still need
+  # Accessible :edit on the root, even inside that context.
+  config.authorize_write = lambda { |actor:, root_recording:, recordable:, **|
+    next false unless root_recording
+
+    if defined?(RecordingStudio::Access) && recordable.is_a?(RecordingStudio::Access)
+      next true if RecordingStudioAccessible::AccessCreationContext.allowed?
+
+      RecordingStudioAccessible.authorized?(
+        actor: actor,
+        recording: root_recording,
+        role: :admin
+      )
+    else
+      RecordingStudioAccessible.authorized?(
+        actor: actor,
+        recording: root_recording,
+        role: :edit
+      )
+    end
+  }
 
   # Emit ActiveSupport::Notifications events
   config.event_notifications_enabled = true

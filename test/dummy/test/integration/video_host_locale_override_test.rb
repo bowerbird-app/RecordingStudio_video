@@ -29,6 +29,7 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     end
     @workspace = Workspace.create!(name: "Host Override #{SecureRandom.hex(4)}")
     @root = RecordingStudio.root_recording_for(@workspace)
+    grant_dummy_owner!(@root, actor: @user)
     sign_in @user
   end
 
