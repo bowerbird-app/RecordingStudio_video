@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-# External Embed 0.1.3 and API 0.11.2 still require recording_studio below 5.
-# Widen that requirement when Bundler loads gemspecs so this app can resolve 6.3.0.
+# Dummy API 0.11.2 still requires recording_studio below 5.
+# Widen that requirement when Bundler loads gemspecs so this app can resolve 6.5.0.
 module WidenRecordingStudioRequirement
   def add_dependency(name, *requirements)
-    requirements = [">= 6.3.0"] if name.to_s == "recording_studio" && !allows_recording_studio_six_three?(requirements)
+    requirements = [">= 6.5.0"] if name.to_s == "recording_studio" && !allows_recording_studio_six_five?(requirements)
 
     super
   end
 
   private
 
-  def allows_recording_studio_six_three?(requirements)
-    Gem::Requirement.new(requirements).satisfied_by?(Gem::Version.new("6.3.0"))
+  def allows_recording_studio_six_five?(requirements)
+    Gem::Requirement.new(requirements).satisfied_by?(Gem::Version.new("6.5.0"))
   rescue ArgumentError
     false
   end

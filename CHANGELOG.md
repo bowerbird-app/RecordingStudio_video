@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-06
+
+### Changed
+
+- Dummy videos authorize through Recording Studio Accessible. Index lists `root_recordings_for`; create/edit load a recording then `authorized?` (`:view` to list, `:edit` to write). Missing access is a 404. `ApplicationController` uses `RecordingStudioAccessible::ControllerAuth` (Devise still identifies). Dummy `config.authorize_write` calls Accessible (`:edit`) so Core 6.5 writes fail closed. Seeds grant the demo admin on Studio Workspace and Client Workspace, not Private Workspace.
+- Loosen `recording_studio_external_embed` to `>= 0.1.1` (was `~> 0.1.1`). Development and dummy Gemfiles pin External Embed `v0.2.2`, Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, and Metrics `v0.7.3` (root). Dummy API stays `v0.11.2` with Metrics `v0.3.1` so the boot test does not add Logs. Admin stays unpinned here.
+
+### Upgrade notes
+
+- Bump to `0.5.1`. Hosts that copy the dummy video screens must grant Accessible roles before those actions succeed. Dummy API pin is unchanged. No migration.
+
 ## [0.5.0] - 2026-11-05
 
 ### Changed
@@ -214,7 +225,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.0...v0.3.1

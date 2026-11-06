@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.0", ::RecordingStudioVideo::VERSION
+    assert_equal "0.5.1", ::RecordingStudioVideo::VERSION
   end
 
   def test_engine_exists
@@ -15,7 +15,8 @@ class RecordingStudioVideoTest < Minitest::Test
     gemspec = File.read(File.expand_path("../recording_studio_video.gemspec", __dir__))
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.3.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", "~> 0.1.1"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", ">= 0.1.1"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", "~> 0.1.1"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.341"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0"'
     refute_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
@@ -51,15 +52,15 @@ class RecordingStudioVideoTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.5.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.5.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.2.2"'
     flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.341"'
     assert_includes root_gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.2"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.3", require: false'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.3", require: false'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.3.1"'
@@ -67,9 +68,9 @@ class RecordingStudioVideoTest < Minitest::Test
                     'github: "bowerbird-app/RecordingStudio_api", tag: "v0.11.2", require: false'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.3"'
     assert_includes gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.1.3"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.2.2"'
     refute_includes gemfile, 'tag: "v4.7.0"'
     refute_includes root_gemfile, 'tag: "v4.7.0"'
     refute_includes gemfile, 'tag: "v0.1.198"'
@@ -201,6 +202,9 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes configuration, "RecordingStudio::Layout.accept(value)"
     assert_includes controller_source, "recording_studio_layout"
     assert_includes controller_source, '"application" if devise_controller?'
+    assert_includes controller_source, "RecordingStudioAccessible::ControllerAuth"
+    assert_includes controller_source, "recording_studio_auth"
+    assert_includes controller_source, "require_accessible_recording!"
     assert_includes controller_source, "def application_layout"
     assert_includes controller_source, "recording_studio_resolved_layout"
     refute_includes controller_source, "UsesDefaultLayout"
@@ -252,6 +256,8 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes initializer_source, "config.require_recordable_declarations = true"
     assert_includes initializer_source,
                     "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\", \"RecordingStudioVideo::Video\" ]"
+    assert_includes initializer_source, "config.authorize_write"
+    assert_includes initializer_source, "RecordingStudioAccessible.authorized?"
     refute_includes initializer_source, "config.include_children"
     refute_includes initializer_source, "config.features."
     refute_includes initializer_source, "v3"
@@ -294,6 +300,11 @@ class RecordingStudioVideoTest < Minitest::Test
     view_source = File.read(File.expand_path("dummy/app/views/videos/index.html.erb", __dir__))
     form_source = File.read(File.expand_path("dummy/app/views/videos/_form.html.erb", __dir__))
 
+    videos_controller = File.read(File.expand_path("dummy/app/controllers/videos_controller.rb", __dir__))
+    assert_includes videos_controller, "accessible_workspace_roots(role: :view)"
+    assert_includes videos_controller, "require_accessible_recording!(recording, role: :edit)"
+    refute_includes videos_controller, "Workspace.order(:name)"
+
     assert_includes view_source, "dummy_page_nav"
     assert_includes view_source, "recording_studio_video_player"
     assert_includes view_source, "FlatPack::Button::Component"
@@ -310,7 +321,7 @@ class RecordingStudioVideoTest < Minitest::Test
     refute Dir.exist?(File.expand_path("../docs/gem_template", __dir__))
 
     widen = File.read(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
-    assert_includes widen, '">= 6.3.0"'
+    assert_includes widen, '">= 6.5.0"'
     dummy_gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
     assert_includes File.read(File.expand_path("../Gemfile", __dir__)),
                     "test/support/widen_recording_studio_requirement"

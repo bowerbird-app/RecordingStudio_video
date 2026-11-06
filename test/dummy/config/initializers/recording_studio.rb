@@ -12,6 +12,19 @@ RecordingStudio.configure do |config|
 
   # Actor resolver for events when no actor is explicitly supplied
   config.actor = -> { Current.actor }
+  config.impersonator = -> { Current.impersonator }
+
+  # Core 6.5 fails closed unless a write authorizer is set. Dummy writes go
+  # through Accessible; grant/bootstrap writes use AccessCreationContext.
+  config.authorize_write = lambda do |actor:, recording:, root_recording:, parent_recording:, **|
+    next false if actor.blank?
+    next true if RecordingStudioAccessible::AccessCreationContext.allowed?
+
+    target = recording || parent_recording || root_recording
+    next false if target.blank?
+
+    RecordingStudioAccessible.authorized?(actor: actor, recording: target, role: :edit)
+  end
 
   # Emit ActiveSupport::Notifications events
   config.event_notifications_enabled = true

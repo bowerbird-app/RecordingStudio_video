@@ -2,6 +2,13 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
+grant_seed_owner = lambda do |actor:, recording:|
+  return if RecordingStudioAccessible.authorized?(actor: actor, recording: recording, role: :view)
+
+  result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: actor)
+  raise result.error if result.failure?
+end
+
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|
   RecordingStudio::Recording.where(RecordingStudio::Recording.recording_studio_trashable_kept_sql).find_by(
     root_recording: root_recording,
@@ -36,6 +43,9 @@ begin
   root_recording = RecordingStudio.root_recording_for(workspace)
   accessible_root_recording = RecordingStudio.root_recording_for(accessible_workspace)
   private_root_recording = RecordingStudio.root_recording_for(private_workspace)
+
+  grant_seed_owner.call(actor: user, recording: root_recording)
+  grant_seed_owner.call(actor: user, recording: accessible_root_recording)
 
   folder_recording = find_or_record_child.call(folder, root_recording, root_recording)
 

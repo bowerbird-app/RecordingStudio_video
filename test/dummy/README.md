@@ -5,6 +5,7 @@ This Rails app exists to validate the Recording Studio addon template in a real 
 ## What It Covers
 
 - Devise authentication with a seeded admin user
+- Recording Studio Accessible grants on Studio Workspace and Client Workspace (Private Workspace stays closed)
 - `Current.actor` wiring for Recording Studio events
 - Root workspace plus seeded folder and page recordables
 - Recording Studio default layout, FlatPack assets, and Tailwind source scanning
