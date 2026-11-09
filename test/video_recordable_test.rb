@@ -5,8 +5,11 @@ require_relative "test_helper"
 require_relative "dummy/config/environment"
 
 require "rails/test_help"
+require_relative "support/dummy_accessible_grants"
 
 class VideoRecordableTest < ActiveSupport::TestCase
+  include DummyAccessibleGrants
+
   YOUTUBE_URL = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
   SHORT_URL = "https://youtu.be/jNQXAC9IVRw"
   CANONICAL_URL = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
@@ -250,7 +253,9 @@ class VideoRecordableTest < ActiveSupport::TestCase
   end
 
   def workspace_root
-    RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Video Workspace")))
+    root = RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Video Workspace")))
+    grant_dummy_owner!(root)
+    root
   end
 
   def record_video(root, url, title: "Launch", description: "Teaser")

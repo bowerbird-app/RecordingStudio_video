@@ -2,7 +2,7 @@
 
 class VideosController < ApplicationController
   def index
-    @roots = Workspace.order(:name).map { |workspace| RecordingStudio.root_recording_for(workspace) }
+    @roots = accessible_workspace_roots(role: :view)
   end
 
   def new
@@ -53,19 +53,20 @@ class VideosController < ApplicationController
   private
 
   def parent_root
-    if params[:workspace_id].present?
+    recording = if params[:workspace_id].present?
       RecordingStudio::Recording.find(params[:workspace_id])
     else
-      workspace = Workspace.find_by(name: "Studio Workspace") || Workspace.order(:created_at).first!
-      RecordingStudio.root_recording_for(workspace)
+      current_root_recording.presence || accessible_workspace_roots(role: :edit).first
     end
+
+    require_accessible_recording!(recording, role: :edit)
   end
 
   def video_recording
     recording = RecordingStudio::Recording.find(params[:id])
     raise ActiveRecord::RecordNotFound unless recording.recordable.is_a?(RecordingStudioVideo::Video)
 
-    recording
+    require_accessible_recording!(recording, role: :edit)
   end
 
   def video_params

@@ -18,6 +18,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     end
     @workspace = Workspace.create!(name: "Wave2 I18n #{SecureRandom.hex(4)}")
     @root = RecordingStudio.root_recording_for(@workspace)
+    grant_dummy_owner!(@root, actor: @user)
     sign_in @user
     @backend_before = I18n.backend
     @load_path_before = I18n.load_path.dup
