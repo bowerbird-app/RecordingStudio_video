@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Development and dummy Gemfiles pin Recording Studio `v6.7.0`, Flatpack `v0.1.356`, Accessible `v0.31.0`, Trashable `v0.14.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, and Metrics `v0.8.0`. External Embed stays `v0.2.2`. Logs stays `v0.7.4`. Dummy development/test pins API `v0.22.1`, plus Moveable `v4.1.1` and Icons `v0.2.1` because that API release depends on Moveable and Moveable is not on RubyGems. The dummy root-switch scope still lists every workspace, and its default root is one the actor can view. Root Switchable 0.15 forbids the switch page otherwise. Gem version stays `0.5.1`. Gemspec floors are unchanged. No migration.
+
 ## [0.5.1] - 2026-11-06
 
 ### Changed
