@@ -6,6 +6,11 @@ require "devise/test/integration_helpers"
 class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
+  def create_viewable_root!(actor, name:)
+    workspace = Workspace.create!(name: name)
+    grant_dummy_owner!(RecordingStudio.root_recording_for(workspace), actor: actor)
+  end
+
   test "sign in page uses the devise layout and is not squished by the default layout" do
     get new_user_session_path
 
@@ -44,8 +49,7 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
 
     sign_in user
 
-    workspace = Workspace.create!(name: "Switch Page Workspace")
-    RecordingStudio.root_recording_for(workspace)
+    create_viewable_root!(user, name: "Switch Page Workspace")
 
     get "/recording_studio_root_switchable/v1/root_switch?scope=all_workspaces"
 
@@ -62,10 +66,8 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
 
     sign_in user
 
-    source_workspace = Workspace.create!(name: "Source Workspace")
-    target_workspace = Workspace.create!(name: "Target Workspace")
-    target_root_recording = RecordingStudio.root_recording_for(target_workspace)
-    RecordingStudio.root_recording_for(source_workspace)
+    create_viewable_root!(user, name: "Source Workspace")
+    target_root_recording = create_viewable_root!(user, name: "Target Workspace")
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
       scope: "all_workspaces",
@@ -86,10 +88,8 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
 
     sign_in user
 
-    source_workspace = Workspace.create!(name: "Fallback Source Workspace")
-    target_workspace = Workspace.create!(name: "Fallback Target Workspace")
-    target_root_recording = RecordingStudio.root_recording_for(target_workspace)
-    RecordingStudio.root_recording_for(source_workspace)
+    create_viewable_root!(user, name: "Fallback Source Workspace")
+    target_root_recording = create_viewable_root!(user, name: "Fallback Target Workspace")
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
       scope: "all_workspaces",
