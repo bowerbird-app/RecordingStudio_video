@@ -10,7 +10,7 @@ This gem requires:
 
 Those floors match `recording_studio_video.gemspec`. Development and dummy Gemfiles may pin newer tags; hosts only need the gemspec ranges.
 
-Current development pins are Recording Studio `v6.7.0`, Flatpack `v0.1.356`, Accessible `v0.31.0`, Trashable `v0.14.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Dummy development/test also pins API `v0.22.1`, Logs `v0.7.4`, Moveable `v4.1.1`, and Icons `v0.2.1` for the Video API boot test. Hosts do not need those pins unless they load the same gems.
+Current development pins are Recording Studio `v6.10.0`, Flatpack `v0.1.366`, Accessible `v0.37.0`, Trashable `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Dummy development/test also pins API `v0.23.1`, Logs `v0.7.4`, Moveable `v4.1.1`, and Icons `v0.2.1` for the Video API boot test. Hosts do not need those pins unless they load the same gems. Hosts on Recording Studio 6.9 or newer copy core migration `20261114090000_add_root_recording_id_to_recording_studio_events` before writing events. That column is a Recording Studio migration, not a migration from this gem.
 
 ## First install
 
