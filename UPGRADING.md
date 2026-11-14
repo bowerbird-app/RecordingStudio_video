@@ -10,7 +10,7 @@ This gem requires:
 
 Those floors match `recording_studio_video.gemspec`. Development and dummy Gemfiles may pin newer tags; hosts only need the gemspec ranges.
 
-Current development pins are Recording Studio `v6.10.0`, Flatpack `v0.1.366`, Accessible `v0.37.0`, Trashable `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Dummy development/test also pins API `v0.23.1`, Logs `v0.7.4`, Moveable `v4.1.1`, and Icons `v0.2.1` for the Video API boot test. Hosts do not need those pins unless they load the same gems. Hosts on Recording Studio 6.9 or newer copy core migration `20261114090000_add_root_recording_id_to_recording_studio_events` before writing events. That column is a Recording Studio migration, not a migration from this gem.
+Current development pins are Recording Studio `v6.13.0`, Flatpack `v0.1.374`, Accessible `v0.40.0`, Trashable `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Dummy development/test also pins API `v0.23.2`, Logs `v0.7.5`, Moveable `v4.1.1`, and Icons `v0.2.1` for the Video API boot test. Hosts do not need those pins unless they load the same gems. Accessible 0.40 requires Recording Studio 6.13.0 or newer. Hosts on Recording Studio 6.9 or newer copy core migration `20261114090000_add_root_recording_id_to_recording_studio_events` before writing events. That column is a Recording Studio migration, not a migration from this gem.
 
 ## First install
 
@@ -22,7 +22,11 @@ Current development pins are Recording Studio `v6.10.0`, Flatpack `v0.1.366`, Ac
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-## This release (0.5.1)
+## This release (0.5.2)
+
+Bump the gem to `0.5.2`. Gemspec floors are unchanged. Development pins move to Recording Studio `v6.13.0`, Flatpack `v0.1.374`, and Accessible `v0.40.0`. Dummy development/test pins API `v0.23.2` and Logs `v0.7.5`. A host that loads Accessible 0.40 needs Recording Studio 6.13.0 or newer. No migration.
+
+## 0.5.1
 
 Bump the gem to `0.5.1`. Hosts that still use External Embed 0.1.x keep working; 0.2.x is now allowed. Dummy videos go through Accessible (`authorized?` / `root_recordings_for`) instead of unscoped `Recording.find`. Development pins Recording Studio `v6.5.0`, Accessible `v0.24.2`, Trashable `v0.12.3`, Metrics `v0.7.3`, and External Embed `v0.2.2`. Dummy development/test also pins `recording_studio_api` `v0.17.1` and Logs `v0.7.4` for the Video API boot test. No migration.
 

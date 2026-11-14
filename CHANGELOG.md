@@ -2,9 +2,15 @@
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-14
+
 ### Changed
 
-- Development and dummy Gemfiles pin Recording Studio `v6.10.0`, Flatpack `v0.1.366`, Accessible `v0.37.0`, Trashable `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, and Metrics `v0.8.0`. External Embed stays `v0.2.2`. Logs stays `v0.7.4`. Dummy development/test pins API `v0.23.1`, plus Moveable `v4.1.1` and Icons `v0.2.1` because that API release depends on Moveable and Moveable is not on RubyGems. The dummy copies Recording Studio 6.9's `root_recording_id` events migration so event writes succeed. The dummy root-switch scope still lists every workspace, and its default root is one the actor can view. Root Switchable 0.15 forbids the switch page otherwise. Gem version stays `0.5.1`. Gemspec floors are unchanged. No gem migration.
+- Development and dummy Gemfiles pin Recording Studio `v6.13.0`, Flatpack `v0.1.374`, and Accessible `v0.40.0`. Trashable stays `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Dummy development/test pins API `v0.23.2` and Logs `v0.7.5`, plus Moveable `v4.1.1` and Icons `v0.2.1` because that API release depends on Moveable and Moveable is not on RubyGems. Accessible 0.40 requires Recording Studio `>= 6.13.0`. The dummy still copies Recording Studio 6.9's `root_recording_id` events migration so event writes succeed. Gemspec floors stay `recording_studio` `>= 6.3.0` and `flat_pack` `>= 0.1.341`. No gem migration.
+
+### Upgrade notes
+
+- Bump to `0.5.2` when you want this gem's development pins. Hosts that already satisfy the gemspec floors do not need a new migration. A host that also loads Accessible 0.40 needs Recording Studio 6.13.0 or newer.
 
 ## [0.5.1] - 2026-11-06
 
@@ -229,7 +235,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...v0.4.0
