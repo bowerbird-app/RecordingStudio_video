@@ -19,8 +19,8 @@ class VideosAccessTest < ActionDispatch::IntegrationTest
     end
     @workspace = Workspace.create!(name: "Owned Videos #{SecureRandom.hex(4)}")
     @hidden_workspace = Workspace.create!(name: "Hidden Videos #{SecureRandom.hex(4)}")
-    @root = RecordingStudio.root_recording_for(@workspace)
-    @hidden_root = RecordingStudio.root_recording_for(@hidden_workspace)
+    @root = RecordingStudio.create_root_recording!(@workspace, actor: @owner)
+    @hidden_root = RecordingStudio.create_root_recording!(@hidden_workspace, actor: @owner)
     grant_dummy_owner!(@root, actor: @owner)
   end
 

@@ -13,13 +13,15 @@ Provider details stay on the embed returned by `RecordingStudio::ExternalEmbed.r
 Add the gem next to Recording Studio, External Embed, and Flatpack.
 
 ```ruby
-gem "recording_studio", ">= 6.3.0"
-gem "recording_studio_external_embed", ">= 0.1.1"
+gem "recording_studio", ">= 7.0", "< 8.0"
+gem "recording_studio_external_embed", ">= 0.6.0"
 gem "flat_pack", ">= 0.1.341"
-gem "recording_studio_video", "~> 0.5.1"
+gem "recording_studio_video", "~> 0.6.0"
 ```
 
-This repository pins Recording Studio `v6.7.0` and Flatpack `v0.1.356`. Accessible is `v0.31.0`, Trashable `v0.14.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, Metrics `v0.8.0`, and External Embed `v0.2.2`. Gemfiles do not rewrite `Gem::Specification`. Dummy development/test pins `recording_studio_api` `v0.22.1` (`require: false`), Logs `v0.7.4`, Moveable `v4.1.1`, and Icons `v0.2.1` so the Video API boot test can load the real registry next to External Embed `v0.2.2`. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` from `to_prepare` (not the engine `after_initialize` initializer); a top-level `Video` constant and an early model `require` are not required.
+This repository pins Recording Studio `v7.0.0` and Flatpack `v0.1.356`. Accessible is `v0.43.1`, Trashable `v0.16.1`, Cache `v0.6.3`, Root Switchable `v0.15.1`, Metrics `v0.8.0`, and External Embed `v0.6.0`. Gemfiles do not rewrite `Gem::Specification`. Dummy development/test pins `recording_studio_api` `v0.23.4` (`require: false`), Logs `v0.7.4`, Moveable `v4.1.1`, and Icons `v0.2.1` so the Video API boot test can load the real registry next to External Embed `v0.6.0`. This gem does not depend on the YouTube Data API gem. When a host already loads `RecordingStudioApi`, a video registers `title`, `url`, and `description` as writable fields. `provider`, `canonical_url`, and `content_type` are read-only fields derived at response time. Registration resolves `::RecordingStudioVideo::Video` from `to_prepare` (not the engine `after_initialize` initializer); a top-level `Video` constant and an early model `require` are not required.
+
+Create a workspace root with `RecordingStudio.create_root_recording!(workspace, actor:)`. `root_recording_for` only finds a root.
 
 Page headings on the shared layout come from `content_for :title` and `content_for :subtitle`. `RecordingStudioVideo.configuration.layout` is `nil` unless a host sets it. `nil` uses the host Recording Studio layout, then `recording_studio/default_layout`.
 

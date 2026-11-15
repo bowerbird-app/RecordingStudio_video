@@ -15,7 +15,7 @@ class VideosTest < ActionDispatch::IntegrationTest
     end
     sign_in @user
     @workspace = Workspace.create!(name: "Video UI #{SecureRandom.hex(4)}")
-    @root = RecordingStudio.root_recording_for(@workspace)
+    @root = RecordingStudio.create_root_recording!(@workspace, actor: @user)
     grant_dummy_owner!(@root, actor: @user)
   end
 
@@ -44,7 +44,7 @@ class VideosTest < ActionDispatch::IntegrationTest
       workspace_id: @root.id,
       video: {
         title: "<script>alert(1)</script>",
-        url: "https://vimeo.com/123456",
+        url: "https://example.com/watch/123",
         description: "\"><img>"
       }
     }
@@ -64,7 +64,7 @@ class VideosTest < ActionDispatch::IntegrationTest
           workspace_id: @root.id,
           video: {
             title: "Nope",
-            url: "https://vimeo.com/123456",
+            url: "https://example.com/watch/123",
             description: "Skip"
           }
         }

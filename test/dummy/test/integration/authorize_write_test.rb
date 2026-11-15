@@ -27,7 +27,10 @@ class AuthorizeWriteTest < ActiveSupport::TestCase
       record.password_confirmation = "Password"
     end
     workspace = Workspace.create!(name: "Write policy #{SecureRandom.hex(4)}")
-    root_recording = RecordingStudio.root_recording_for(workspace)
+    refute authorizer.call(actor: nil, root_recording: nil, recordable: workspace)
+    assert authorizer.call(actor: actor, root_recording: nil, recordable: workspace)
+
+    root_recording = RecordingStudio.create_root_recording!(workspace, actor: actor)
     folder = Folder.new(name: "Write policy folder")
 
     refute authorizer.call(actor: nil, root_recording: root_recording, recordable: folder)
@@ -44,7 +47,7 @@ class AuthorizeWriteTest < ActiveSupport::TestCase
       record.password_confirmation = "Password"
     end
     workspace = Workspace.create!(name: "Context page #{SecureRandom.hex(4)}")
-    root_recording = RecordingStudio.root_recording_for(workspace)
+    root_recording = RecordingStudio.create_root_recording!(workspace, actor: actor)
     page = Page.new(title: "Context page")
 
     refute RecordingStudioAccessible.authorized?(actor: actor, recording: root_recording, role: :edit)
