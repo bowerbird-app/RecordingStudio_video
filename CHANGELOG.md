@@ -12,6 +12,7 @@
 - Dummy `authorize_write` still requires Accessible `:edit` on an existing root. A present actor may create a root, because core 7 authorizes that write before the root exists. `allow_unauthorized_writes` stays off.
 - Dummy seed child lookup uses `Recording.kept`. Trashable 0.16 removed `recording_studio_trashable_kept_sql`.
 - Copy Recording Studio 7's `root_recording_id` events migration into the dummy. Private Workspace still has no access grant. Playback still goes through External Embed. External Embed 0.6 recognizes Vimeo, so a Vimeo URL is a video. An unknown host stays unsupported.
+- Bump dummy `msgpack` to 1.8.7 (GHSA-73v3-wf97-vpgj). Bootsnap still allows `~> 1.5`.
 
 ### Upgrade notes
 
