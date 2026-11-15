@@ -8,7 +8,10 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
 
   def create_viewable_root!(actor, name:)
     workspace = Workspace.create!(name: name)
-    grant_dummy_owner!(RecordingStudio.root_recording_for(workspace), actor: actor)
+    grant_dummy_owner!(
+      RecordingStudio.create_root_recording!(workspace, actor: actor),
+      actor: actor
+    )
   end
 
   test "sign in page uses the devise layout and is not squished by the default layout" do
@@ -32,7 +35,7 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     sign_in user
 
     workspace = Workspace.create!(name: "Dropdown Workspace")
-    RecordingStudio.root_recording_for(workspace)
+    RecordingStudio.create_root_recording!(workspace, actor: user)
 
     get root_path
 

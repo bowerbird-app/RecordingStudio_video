@@ -19,13 +19,24 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
 
   test "root recordable creates a root recording" do
     workspace = Workspace.create!(name: unique_name("Root Workspace"))
+    untouched = Workspace.create!(name: unique_name("Lookup Workspace"))
 
-    root_recording = RecordingStudio.root_recording_for(workspace)
+    assert_nil RecordingStudio.root_recording_for(untouched)
+
+    root_recording = RecordingStudio.create_root_recording!(workspace, actor: dummy_write_actor)
 
     assert_predicate root_recording, :persisted?
     assert_equal workspace, root_recording.recordable
     assert_nil root_recording.parent_recording_id
     assert_equal root_recording.id, root_recording.root_recording_id
+    assert_equal root_recording, RecordingStudio.root_recording_for(workspace)
+
+    event = RecordingStudio::Event.find_by!(recording_id: root_recording.id)
+    assert_equal "created", event.action
+    assert_equal root_recording.id, event.root_recording_id
+
+    assert_equal root_recording, RecordingStudio.create_root_recording!(workspace, actor: dummy_write_actor)
+    assert_equal 1, RecordingStudio::Event.where(recording_id: root_recording.id).count
   end
 
   test "allowed child can be recorded under a workspace root" do
@@ -99,7 +110,11 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
   private
 
   def owned_root(prefix)
-    grant_dummy_owner!(RecordingStudio.root_recording_for(Workspace.create!(name: unique_name(prefix))))
+    actor = dummy_write_actor
+    grant_dummy_owner!(
+      RecordingStudio.create_root_recording!(Workspace.create!(name: unique_name(prefix)), actor: actor),
+      actor: actor
+    )
   end
 
   def record_child(recordable, root_recording, parent_recording)

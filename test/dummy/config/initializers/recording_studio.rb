@@ -14,14 +14,17 @@ RecordingStudio.configure do |config|
   config.actor = -> { Current.actor }
   config.impersonator = -> { Current.impersonator }
 
-  # Hosts must set authorize_write before Recording Studio core 6.5.0.
   # Writes fail closed: missing authorize_write raises AuthorizationError;
-  # missing actor raises ActorRequired. A signed-in User is not a write policy.
-  # Access grant/bootstrap writes go through Accessible's AccessCreationContext
-  # only when the recordable is RecordingStudio::Access. Other types still need
-  # Accessible :edit on the root, even inside that context.
+  # missing actor raises ActorRequired. A signed-in User is not a write policy
+  # for an existing root. Core 7 create_root_recording! authorizes before a
+  # root exists, so a present actor may create that root. Later writes still
+  # need Accessible :edit on the root. Access grant/bootstrap writes go through
+  # Accessible's AccessCreationContext only when the recordable is
+  # RecordingStudio::Access.
   config.authorize_write = lambda { |actor:, root_recording:, recordable:, **|
-    next false unless root_recording
+    if root_recording.nil?
+      next actor.present?
+    end
 
     if defined?(RecordingStudio::Access) && recordable.is_a?(RecordingStudio::Access)
       next true if RecordingStudioAccessible::AccessCreationContext.allowed?

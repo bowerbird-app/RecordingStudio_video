@@ -2,9 +2,21 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-15
+
 ### Changed
 
-- Development and dummy Gemfiles pin Recording Studio `v6.7.0`, Flatpack `v0.1.356`, Accessible `v0.31.0`, Trashable `v0.14.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`, and Metrics `v0.8.0`. External Embed stays `v0.2.2`. Logs stays `v0.7.4`. Dummy development/test pins API `v0.22.1`, plus Moveable `v4.1.1` and Icons `v0.2.1` because that API release depends on Moveable and Moveable is not on RubyGems. The dummy root-switch scope still lists every workspace, and its default root is one the actor can view. Root Switchable 0.15 forbids the switch page otherwise. Gem version stays `0.5.1`. Gemspec floors are unchanged. No migration.
+- Require `recording_studio` `>= 7.0`, `< 8.0` and `recording_studio_external_embed` `>= 0.6.0`.
+- Development and dummy Gemfiles pin Recording Studio `v7.0.0`, External Embed `v0.6.0`, Accessible `v0.43.1`, Trashable `v0.16.1`, and Root Switchable `v0.15.1`. Flatpack stays `v0.1.356`. Cache stays `v0.6.3`. Metrics stays `v0.8.0`. Logs stays `v0.7.4`. Dummy development/test pins API `v0.23.4` so Accessible 0.43 can register `openapi_for`. Moveable stays `v4.1.1` and Icons stay `v0.2.1`. Admin stays unpinned.
+- Dummy seeds and tests create roots with `create_root_recording!`. Lookups stay on `root_recording_for`, which no longer creates a root. The root switcher still looks roots up.
+- Dummy `authorize_write` still requires Accessible `:edit` on an existing root. A present actor may create a root, because core 7 authorizes that write before the root exists. `allow_unauthorized_writes` stays off.
+- Dummy seed child lookup uses `Recording.kept`. Trashable 0.16 removed `recording_studio_trashable_kept_sql`.
+- Copy Recording Studio 7's `root_recording_id` events migration into the dummy. Private Workspace still has no access grant. Playback still goes through External Embed. External Embed 0.6 recognizes Vimeo, so a Vimeo URL is a video. An unknown host stays unsupported.
+- Bump dummy `msgpack` to 1.8.7 (GHSA-73v3-wf97-vpgj). Bootsnap still allows `~> 1.5`.
+
+### Upgrade notes
+
+- Bump to `0.6.0`. Hosts need Recording Studio 7.0 or newer, below 8.0, and External Embed 0.6.0 or newer. Replace root-creating `root_recording_for` calls with `create_root_recording!(recordable, actor:)`. Run Recording Studio's `root_recording_id` events migration. No migration from this gem.
 
 ## [0.5.1] - 2026-11-06
 
@@ -229,7 +241,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.3.1...v0.4.0

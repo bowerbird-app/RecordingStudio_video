@@ -87,7 +87,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
   end
 
   test "an unsupported host is invalid with the external embed message" do
-    video = RecordingStudioVideo::Video.new(url: "https://vimeo.com/123456")
+    video = RecordingStudioVideo::Video.new(url: "https://example.com/watch/123")
 
     refute video.valid?
     assert_equal ["That URL is not from a supported provider."], video.errors[:url]
@@ -98,6 +98,14 @@ class VideoRecordableTest < ActiveSupport::TestCase
 
     refute video.valid?
     assert_equal ["That URL is missing a valid id."], video.errors[:url]
+  end
+
+  test "a vimeo url is valid through external embed" do
+    video = RecordingStudioVideo::Video.new(url: "https://vimeo.com/123456", title: "Clip")
+
+    assert video.valid?
+    assert_equal "vimeo", video.provider
+    assert_equal "video", video.content_type
   end
 
   test "a supported youtube url is valid" do
@@ -253,8 +261,12 @@ class VideoRecordableTest < ActiveSupport::TestCase
   end
 
   def workspace_root
-    root = RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Video Workspace")))
-    grant_dummy_owner!(root)
+    actor = dummy_write_actor
+    root = RecordingStudio.create_root_recording!(
+      Workspace.create!(name: unique_name("Video Workspace")),
+      actor: actor
+    )
+    grant_dummy_owner!(root, actor: actor)
     root
   end
 
@@ -355,7 +367,7 @@ class VideoPlayerHelperTest < Minitest::Test
     assert_includes html, "recording-studio-external-embed"
     refute_includes html, "Me at the zoo"
 
-    empty = @view.recording_studio_video_player(RecordingStudioVideo::Video.new(url: "https://vimeo.com/123"))
+    empty = @view.recording_studio_video_player(RecordingStudioVideo::Video.new(url: "https://example.com/watch/123"))
     assert_equal "", empty
     assert_predicate empty, :html_safe?
 

@@ -10,7 +10,7 @@ grant_seed_owner = lambda do |actor:, recording:|
 end
 
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|
-  RecordingStudio::Recording.where(RecordingStudio::Recording.recording_studio_trashable_kept_sql).find_by(
+  RecordingStudio::Recording.kept.find_by(
     root_recording: root_recording,
     parent_recording: parent_recording,
     recordable: recordable
@@ -39,10 +39,10 @@ previous_actor = Current.actor
 Current.actor = user
 
 begin
-  # Create the root recording
-  root_recording = RecordingStudio.root_recording_for(workspace)
-  accessible_root_recording = RecordingStudio.root_recording_for(accessible_workspace)
-  private_root_recording = RecordingStudio.root_recording_for(private_workspace)
+  # Create the root recording. Private Workspace stays ungranted.
+  root_recording = RecordingStudio.create_root_recording!(workspace, actor: user)
+  accessible_root_recording = RecordingStudio.create_root_recording!(accessible_workspace, actor: user)
+  private_root_recording = RecordingStudio.create_root_recording!(private_workspace, actor: user)
 
   grant_seed_owner.call(actor: user, recording: root_recording)
   grant_seed_owner.call(actor: user, recording: accessible_root_recording)

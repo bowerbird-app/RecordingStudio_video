@@ -4,20 +4,22 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.1", ::RecordingStudioVideo::VERSION
+    assert_equal "0.6.0", ::RecordingStudioVideo::VERSION
   end
 
   def test_engine_exists
     assert_kind_of Class, ::RecordingStudioVideo::Engine
   end
 
-  def test_gemspec_requires_recording_studio_6_3
+  def test_gemspec_requires_recording_studio_7
     gemspec = File.read(File.expand_path("../recording_studio_video.gemspec", __dir__))
 
-    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.3.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", ">= 0.1.1"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 7.0", "< 8.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", ">= 0.6.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", "~> 0.1.1"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_external_embed", ">= 0.1.1"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.341"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.3.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0"'
     refute_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_video"
@@ -47,32 +49,39 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes install_script, "fetch-skills.sh"
   end
 
-  def test_dummy_gemfile_pins_recording_studio_6_3_and_flatpack_ref
+  def test_dummy_gemfile_pins_recording_studio_7_and_flatpack_ref
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.7.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.7.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.2.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"'
     flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.356"'
     assert_includes root_gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.31.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.31.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.14.0", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.14.0", require: false'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.43.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.43.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.16.1", require: false'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.16.1", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.3"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.4"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_icons", tag: "v0.2.1", require: false'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v4.1.1", require: false'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v0.22.1", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v0.23.4", require: false'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.1"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.3"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
     assert_includes gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.2.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"'
+    refute_includes gemfile, 'tag: "v6.7.0"'
+    refute_includes root_gemfile, 'tag: "v6.7.0"'
+    refute_includes gemfile, 'tag: "v0.2.2"'
+    refute_includes gemfile, 'tag: "v0.31.0"'
+    refute_includes gemfile, 'tag: "v0.14.0"'
+    refute_includes gemfile, 'tag: "v0.15.0"'
+    refute_includes gemfile, 'tag: "v0.22.1"'
     refute_includes gemfile, 'tag: "v4.7.0"'
     refute_includes root_gemfile, 'tag: "v4.7.0"'
     refute_includes gemfile, 'tag: "v0.1.198"'
@@ -143,6 +152,15 @@ class RecordingStudioVideoTest < Minitest::Test
     assert rule_migration, "expected accessible access_rules migration in dummy"
     assert_includes File.read(constraint_migration), "create_table :recording_studio_access_constraints"
     assert_includes File.read(rule_migration), "create_table :recording_studio_access_rules"
+    assert_includes schema, 't.uuid "root_recording_id", null: false'
+    assert_includes schema, "index_rs_events_on_root_and_timeline"
+    events_migration = File.read(
+      File.expand_path(
+        "dummy/db/migrate/20261114090000_add_root_recording_id_to_recording_studio_events.recording_studio.rb",
+        __dir__
+      )
+    )
+    assert_includes events_migration, "add_column :recording_studio_events, :root_recording_id, :uuid"
   end
 
   def test_template_does_not_ship_copied_core_hooks_or_base_service
@@ -260,8 +278,11 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes initializer_source,
                     "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\", \"RecordingStudioVideo::Video\" ]"
     assert_includes initializer_source, "config.authorize_write"
+    assert_includes initializer_source, "if root_recording.nil?"
+    assert_includes initializer_source, "actor.present?"
     assert_includes initializer_source, "RecordingStudioAccessible.authorized?"
     assert_includes initializer_source, "recordable.is_a?(RecordingStudio::Access)"
+    refute_includes initializer_source, "allow_unauthorized_writes"
     refute_includes initializer_source, "target = recording || parent_recording || root_recording"
     refute_includes initializer_source, "config.include_children"
     refute_includes initializer_source, "config.features."

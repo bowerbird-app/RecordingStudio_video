@@ -17,7 +17,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
       record.password_confirmation = "Password"
     end
     @workspace = Workspace.create!(name: "Wave2 I18n #{SecureRandom.hex(4)}")
-    @root = RecordingStudio.root_recording_for(@workspace)
+    @root = RecordingStudio.create_root_recording!(@workspace, actor: @user)
     grant_dummy_owner!(@root, actor: @user)
     sign_in @user
     @backend_before = I18n.backend
@@ -49,7 +49,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
       workspace_id: @root.id,
       video: {
         title: "Nope",
-        url: "https://vimeo.com/123456",
+        url: "https://example.com/watch/123",
         description: "Skip"
       }
     }
