@@ -11,7 +11,8 @@ module RecordingStudioVideo
         serializer: serializer,
         output_keys: ::RecordingStudioVideo::Video::WRITABLE,
         writable_attributes: ::RecordingStudioVideo::Video::WRITABLE,
-        fields: derived_fields
+        fields: derived_fields,
+        openapi: { tags: ["Video"] }
       )
     end
 

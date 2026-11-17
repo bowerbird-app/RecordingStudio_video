@@ -4,7 +4,12 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.1", ::RecordingStudioVideo::VERSION
+    assert_equal "0.6.2", ::RecordingStudioVideo::VERSION
+    changelog = File.read(File.expand_path("../CHANGELOG.md", __dir__))
+    notes = changelog[changelog.index("## [0.6.2]")...changelog.index("## [0.6.1]")]
+
+    assert_includes notes, "tags `[\"Video\"]`"
+    assert_includes notes, "Trashable"
   end
 
   def test_engine_exists
@@ -189,8 +194,10 @@ class RecordingStudioVideoTest < Minitest::Test
   def test_api_source_fully_qualifies_video_and_recording_studio_api
     source = File.read(File.expand_path("../lib/recording_studio_video/api.rb", __dir__))
     without_qualified = source.gsub("::RecordingStudioVideo::Video", "").gsub("::RecordingStudioApi", "")
+    without_docs_tag = without_qualified.sub('tags: ["Video"]', 'tags: ["docs group"]')
 
-    refute_match(/\bVideo\b/, without_qualified)
+    refute_match(/\bVideo\b/, without_docs_tag)
+    assert_includes source, 'tags: ["Video"]'
     refute_match(/\bRecordingStudioApi\b/, without_qualified)
     assert_includes source, "::RecordingStudioVideo::Video"
     assert_includes source, "::RecordingStudioApi"

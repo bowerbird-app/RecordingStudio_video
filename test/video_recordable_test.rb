@@ -187,6 +187,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
     assert_equal real_video::WRITABLE, registered[:output_keys]
     assert_equal real_video::WRITABLE, registered[:writable_attributes]
     assert_equal real_video::DERIVED, registered[:field_keys]
+    assert_equal ["Video"], registered[:openapi_tags]
   end
 
   private
@@ -217,7 +218,8 @@ class VideoRecordableTest < ActiveSupport::TestCase
           name: type_name,
           output_keys: kwargs[:output_keys],
           writable_attributes: kwargs[:writable_attributes],
-          field_keys: kwargs[:fields].keys
+          field_keys: kwargs[:fields].keys,
+          openapi_tags: kwargs.dig(:openapi, :tags)
         )
       end
     end

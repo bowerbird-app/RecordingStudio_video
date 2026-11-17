@@ -34,6 +34,9 @@ class VideoApiRegistrationBootTest < ActiveSupport::TestCase
         unless registration.fields.keys.sort == %w[canonical_url content_type provider]
           raise "bad fields: #{registration.fields.keys.inspect}"
         end
+        unless registration.openapi[:tags] == ["Video"]
+          raise "bad openapi tags: #{registration.openapi.inspect}"
+        end
 
         RecordingStudioApi.configuration.validate!
         puts "VIDEO_API_BOOT_OK"
