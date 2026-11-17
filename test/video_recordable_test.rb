@@ -187,7 +187,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
     assert_equal real_video::WRITABLE, registered[:output_keys]
     assert_equal real_video::WRITABLE, registered[:writable_attributes]
     assert_equal real_video::DERIVED, registered[:field_keys]
-    assert_equal ["Video"], registered[:openapi_tags]
+    assert_nil registered[:openapi_tags]
   end
 
   private
