@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Development and dummy Gemfiles pin Recording Studio `v7.4.0`, Accessible `v0.46.0`, Trashable `v1.0.1`, and Metrics `v0.9.1`. Dummy also pins Icons `v0.4.1` and API `v1.3.0`. Flatpack stays `v0.1.377`. Cache stays `v0.7.0`. Root Switchable stays `v0.16.0`. External Embed stays `v0.6.0`. Logs stays `v0.8.0`. Moveable stays `v6.0.0`.
+- API 1.3.0 omits list `meta.total_count` unless the request passes `include_total=true`. This gem does not read that field.
+- The dummy app does not copy Recording Studio 7.4's optional `index_rs_recordings_on_root_type_created_at_id` migration.
+
+### Upgrade notes
+
+- No gem version bump. No migration from this gem. Hosts that install Recording Studio 7.4 may add its optional recordings index. Clients that read API list `meta.total_count` pass `include_total=true`.
+
 ## [0.6.0] - 2026-11-15
 
 ### Changed
