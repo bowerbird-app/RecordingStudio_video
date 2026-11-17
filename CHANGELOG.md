@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-11-17
+
+### Fixed
+
+- `RecordingStudioVideo::Api.register!` no longer passes OpenAPI tags. MCP 0.36.5 copies those tags onto the docs sidebar even when no tool uses them, so the Video group was empty. Trash tools stay in Video Trash. MCP builds that name from the public type name `Video` plus Trashable's `tag_suffix` `Trash`.
+
+### Upgrade notes
+
+- Bump to `0.6.3`. No migration. Hosts on Recording Studio MCP 0.36.5 no longer see an empty Video group. Trash, restore, purge, and list trash bin stay under Video Trash.
+
 ## [0.6.2] - 2026-11-17
 
 ### Fixed
@@ -263,7 +273,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...HEAD
+[0.6.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.5.1...v0.6.0
