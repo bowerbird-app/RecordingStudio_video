@@ -4,14 +4,14 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.377"
-gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.46.0"
-gem "recording_studio_cache", github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"
-gem "recording_studio_external_embed", github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"
-gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.1"
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.378"
+gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.54.1"
+gem "recording_studio_cache", github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.1"
+gem "recording_studio_external_embed", github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.1"
+gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.2"
 gem "recording_studio_root_switchable", github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"
-gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1", require: false
+gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.1", require: false
 
 gem "devise"
 gem "pg", "~> 1.1"

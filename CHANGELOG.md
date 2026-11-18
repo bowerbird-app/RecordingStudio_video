@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.6.4] - 2026-11-18
+
+### Changed
+
+- Development and dummy Gemfiles pin Recording Studio `v7.7.1`, Flatpack `v0.1.378`, Accessible `v0.54.1`, Trashable `v1.2.1`, Cache `v0.7.1`, Metrics `v0.9.2`, and External Embed `v0.6.1`. Root Switchable stays `v0.16.0`. Dummy also pins API `v1.16.0`, Logs `v0.8.1`, Moveable `v6.0.2`, and Icons `v0.4.2`.
+- Dummy `config/recording_studio_api.yml` is `shared: {}` so API 1.16 can boot. API still omits list `meta.total_count` unless the request passes `include_total=true`. This gem does not read that field.
+- The dummy app does not copy Recording Studio 7.4, 7.5, or 7.7 migrations.
+
+### Upgrade notes
+
+- Bump to `0.6.4`. No migration from this gem. Hosts on Recording Studio 7.4, 7.5, or 7.7 MUST run `20261116120000_add_recording_studio_events_timeline_index`, `20261116230000_add_recording_studio_recordings_root_type_creation_index`, `20261117120000_enforce_recording_studio_recording_root_invariant`, and `20261117200000_replace_recording_studio_recordings_root_index`. The dummy app does not copy them. Hosts that load API 1.12 or newer need `config/recording_studio_api.yml`. Clients that read API list `meta.total_count` pass `include_total=true`.
+
 ## [0.6.3] - 2026-11-17
 
 ### Fixed
@@ -273,7 +285,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...HEAD
+[0.6.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.0...v0.6.1

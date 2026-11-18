@@ -4,13 +4,17 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.3", ::RecordingStudioVideo::VERSION
+    assert_equal "0.6.4", ::RecordingStudioVideo::VERSION
     changelog = File.read(File.expand_path("../CHANGELOG.md", __dir__))
-    notes = changelog[changelog.index("## [0.6.3]")...changelog.index("## [0.6.2]")]
+    notes = changelog[changelog.index("## [0.6.4]")...changelog.index("## [0.6.3]")]
 
-    assert_includes notes, "no longer passes OpenAPI tags"
-    assert_includes notes, "Video Trash"
-    assert_includes notes, "tag_suffix"
+    assert_includes notes, "v7.7.1"
+    assert_includes notes, "v0.54.1"
+    assert_includes notes, "v1.16.0"
+    assert_includes notes, "shared: {}"
+    assert_includes notes, "MUST run"
+    assert_includes notes, "20261117200000_replace_recording_studio_recordings_root_index"
+    assert_includes changelog, "[0.6.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...v0.6.4"
   end
 
   def test_engine_exists
@@ -60,27 +64,41 @@ class RecordingStudioVideoTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"'
-    flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.377"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.1"'
+    flatpack_pin = 'github: "bowerbird-app/flatpack", tag: "v0.1.378"'
     assert_includes root_gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.46.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.46.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1", require: false'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.54.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.54.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.1", require: false'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.1", require: false'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_icons", tag: "v0.4.1", require: false'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.0", require: false'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v1.3.0", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_icons", tag: "v0.4.2", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.2", require: false'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v1.16.0", require: false'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.2"'
     assert_includes gemfile, flatpack_pin
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.1"'
+    api_config = File.read(File.expand_path("dummy/config/recording_studio_api.yml", __dir__))
+    assert_includes api_config, "shared: {}"
+    upgrading = File.read(File.expand_path("../UPGRADING.md", __dir__))
+    assert_includes upgrading, "MUST run"
+    %w[
+      20261116120000_add_recording_studio_events_timeline_index
+      20261116230000_add_recording_studio_recordings_root_type_creation_index
+      20261117120000_enforce_recording_studio_recording_root_invariant
+      20261117200000_replace_recording_studio_recordings_root_index
+    ].each do |migration|
+      assert_includes upgrading, migration
+      copied = Dir.glob(File.expand_path("dummy/db/migrate/*#{migration}*", __dir__))
+      assert_empty copied, "dummy must not copy #{migration}"
+    end
     refute_includes gemfile, 'tag: "v6.7.0"'
     refute_includes root_gemfile, 'tag: "v6.7.0"'
     refute_includes gemfile, 'tag: "v0.2.2"'
@@ -103,7 +121,18 @@ class RecordingStudioVideoTest < Minitest::Test
     refute_includes gemfile, 'tag: "v1.0.0"'
     refute_includes gemfile, 'tag: "v0.9.0"'
     refute_includes gemfile, 'tag: "v0.4.0"'
-    refute_includes gemfile, 'tag: "v1.2.1"'
+    refute_includes gemfile, 'tag: "v7.4.0"'
+    refute_includes root_gemfile, 'tag: "v7.4.0"'
+    refute_includes gemfile, 'tag: "v0.46.0"'
+    refute_includes gemfile, 'tag: "v1.0.1"'
+    refute_includes gemfile, 'tag: "v0.1.377"'
+    refute_includes gemfile, 'tag: "v0.9.1"'
+    refute_includes gemfile, 'tag: "v0.7.0"'
+    refute_includes gemfile, 'tag: "v0.8.0"'
+    refute_includes gemfile, 'tag: "v0.4.1"'
+    refute_includes gemfile, 'tag: "v6.0.0"'
+    refute_includes gemfile, 'tag: "v1.3.0"'
+    refute_includes gemfile, 'tag: "v0.6.0"'
     refute_includes gemfile, 'tag: "v0.7.3"'
     refute_includes gemfile, 'tag: "v0.17.0"'
     refute_includes gemfile, 'tag: "v0.17.1"'
