@@ -38,6 +38,28 @@ class VideoApiRegistrationBootTest < ActiveSupport::TestCase
           raise "bad openapi: #{registration.openapi.inspect}"
         end
 
+        require "recording_studio_trashable"
+        RecordingStudioTrashable::Api.register!
+        RecordingStudio.enable_capability(:trashable, on: "RecordingStudioVideo::Video")
+        unless RecordingStudio.capability_enabled?(:trashable, for: "RecordingStudioVideo::Video")
+          raise "trashable is not enabled on Video"
+        end
+
+        trash_actions = %w[trashable_trash trashable_restore trashable_purge trashable_list_trash_bin]
+        trash_actions.each do |name|
+          raise "trashable action #{name} is not registered" unless RecordingStudioApi.capability_action(name)
+        end
+
+        exposed = RecordingStudioApi.capability_actions_for("RecordingStudioVideo::Video").map { |action| action.name.to_s }
+        leaked = trash_actions & exposed
+        raise "trashable actions exposed: #{leaked.inspect}" unless leaked.empty?
+        unless registration.auto_capability_actions == false
+          raise "auto_capability_actions: #{registration.auto_capability_actions.inspect}"
+        end
+        unless registration.capability_actions.empty?
+          raise "explicit capability actions: #{registration.capability_actions.inspect}"
+        end
+
         RecordingStudioApi.configuration.validate!
         puts "VIDEO_API_BOOT_OK"
       ensure
