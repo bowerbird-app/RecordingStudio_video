@@ -10,7 +10,16 @@ This gem requires:
 
 Those floors match `recording_studio_video.gemspec`. Development and dummy Gemfiles may pin newer tags; hosts only need the gemspec ranges.
 
-Current development pins are Recording Studio `v7.4.0`, Flatpack `v0.1.377`, Accessible `v0.46.0`, Trashable `v1.0.1`, Cache `v0.7.0`, Root Switchable `v0.16.0`, Metrics `v0.9.1`, and External Embed `v0.6.0`. Dummy development/test also pins API `v1.3.0`, Logs `v0.8.0`, Moveable `v6.0.0`, and Icons `v0.4.1` for the Video API boot test. Hosts do not need those pins unless they load the same gems. API 1.3.0 omits list `meta.total_count` unless the request passes `include_total=true`. This gem does not read that field. Recording Studio 7.4's `index_rs_recordings_on_root_type_created_at_id` migration is optional. The dummy app does not copy it.
+Current development pins are Recording Studio `v7.7.1`, Flatpack `v0.1.378`, Accessible `v0.54.1`, Trashable `v1.2.1`, Cache `v0.7.1`, Root Switchable `v0.16.0`, Metrics `v0.9.2`, and External Embed `v0.6.1`. Dummy development/test also pins API `v1.16.0`, Logs `v0.8.1`, Moveable `v6.0.2`, and Icons `v0.4.2` for the Video API boot test. Hosts do not need those pins unless they load the same gems. Dummy `config/recording_studio_api.yml` is `shared: {}`. API omits list `meta.total_count` unless the request passes `include_total=true`. This gem does not read that field. Hosts on Recording Studio 7.4, 7.5, or 7.7 MUST run these migrations. The dummy app does not copy them.
+
+- `20261116120000_add_recording_studio_events_timeline_index` (7.4)
+- `20261116230000_add_recording_studio_recordings_root_type_creation_index` (7.4)
+- `20261117120000_enforce_recording_studio_recording_root_invariant` (7.5)
+- `20261117200000_replace_recording_studio_recordings_root_index` (7.7)
+
+## This release (0.6.4)
+
+Bump the gem to `0.6.4`. No migration from this gem. Hosts that install Recording Studio 7.4, 7.5, or 7.7 MUST run the four migrations listed above. Hosts that load API 1.12 or newer need `config/recording_studio_api.yml`. Clients that read API list `meta.total_count` pass `include_total=true`.
 
 ## First install
 

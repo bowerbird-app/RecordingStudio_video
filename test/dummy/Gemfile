@@ -3,19 +3,20 @@ source "https://rubygems.org"
 gem "recording_studio_video", path: "../.."
 
 # RecordingStudio engine
-gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.46.0"
-gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1", require: false
+gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.54.1"
+gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.1", require: false
 
 # Root switcher for the top nav
-gem "recording_studio_cache", github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"
-# API v1.3.0 needs Logs (>= 0.8.0, < 2), Metrics (>= 0.9.0, < 2),
-# Moveable (>= 5.0, < 7), and Trashable (>= 0.17.0, < 2). Moveable is not on
-# RubyGems and needs Icons, so both are pinned here. Metrics matches the root pin.
-gem "recording_studio_logs", github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"
-gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.1"
-gem "recording_studio_icons", github: "bowerbird-app/RecordingStudio_icons", tag: "v0.4.1", require: false
-gem "recording_studio_moveable", github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.0", require: false
+gem "recording_studio_cache", github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.1"
+# API v1.16.0 needs Logs (>= 0.8.0, < 2), Metrics (>= 0.9.0, < 2),
+# Moveable (>= 5.0, < 7), Trashable (>= 0.17.0, < 2), Accessible (>= 0.50, < 2),
+# and Recording Studio (>= 7.7, < 8). Moveable is not on RubyGems and needs
+# Icons, so both are pinned here. Metrics matches the root pin.
+gem "recording_studio_logs", github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.1"
+gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.2"
+gem "recording_studio_icons", github: "bowerbird-app/RecordingStudio_icons", tag: "v0.4.2", require: false
+gem "recording_studio_moveable", github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.2", require: false
 gem "recording_studio_root_switchable", github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"
 
 # Devise authentication
@@ -42,9 +43,9 @@ gem "jbuilder"
 gem "tailwindcss-rails"
 
 # FlatPack UI component library [https://github.com/bowerbird-app/flatpack]
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.377"
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.378"
 
-gem "recording_studio_external_embed", github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.0"
+gem "recording_studio_external_embed", github: "bowerbird-app/RecordingStudio_external_embed", tag: "v0.6.1"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -76,9 +77,10 @@ group :development, :test do
   # Real API registry for boot/registration tests (not a gemspec dependency).
   # require: false so normal dummy boot skips it; set RECORDING_STUDIO_VIDEO_LOAD_API=1
   # in application.rb to require it at boot for the rails runner registration test.
-  # v1.3.0 accepts openapi_for from Accessible 0.46 and Recording Studio >= 7.1.
+  # v1.16.0 requires Accessible >= 0.50 and Recording Studio >= 7.7.
   # List meta.total_count is omitted unless the request passes include_total=true.
-  gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v1.3.0", require: false
+  # Boot requires config/recording_studio_api.yml (shared: {}).
+  gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v1.16.0", require: false
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

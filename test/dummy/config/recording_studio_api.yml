@@ -1,0 +1,3 @@
+# API 1.12 and newer raise at boot when this file is missing.
+# The dummy registration boot loads Recording Studio API. Shared settings stay empty.
+shared: {}
