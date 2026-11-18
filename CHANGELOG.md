@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.6.5] - 2026-11-18
+
+### Fixed
+
+- `RecordingStudioVideo::Api.register!` passes `auto_capability_actions: false`. Trash, Restore, Purge, and List trash bin are not added to the Video public API when a host turns on trashable. Writable fields stay `title`, `url`, and `description`. Derived fields stay `provider`, `canonical_url`, and `content_type`. The registration still sets no OpenAPI tags.
+
+### Upgrade notes
+
+- Bump to `0.6.5`. No migration. Hosts that load Recording Studio API no longer see Trash, Restore, Purge, or List trash bin on Video.
+
 ## [0.6.4] - 2026-11-18
 
 ### Changed
@@ -285,7 +295,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...HEAD
+[0.6.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.1...v0.6.2

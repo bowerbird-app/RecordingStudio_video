@@ -17,6 +17,10 @@ Current development pins are Recording Studio `v7.7.1`, Flatpack `v0.1.378`, Acc
 - `20261117120000_enforce_recording_studio_recording_root_invariant` (7.5)
 - `20261117200000_replace_recording_studio_recordings_root_index` (7.7)
 
+## This release (0.6.5)
+
+Bump the gem to `0.6.5`. No migration from this gem. `RecordingStudioVideo::Api.register!` passes `auto_capability_actions: false`. Trash, Restore, Purge, and List trash bin are not added to the Video public API. Writable fields stay `title`, `url`, and `description`. Derived fields stay `provider`, `canonical_url`, and `content_type`. The registration still sets no OpenAPI tags.
+
 ## This release (0.6.4)
 
 Bump the gem to `0.6.4`. No migration from this gem. Hosts that install Recording Studio 7.4, 7.5, or 7.7 MUST run the four migrations listed above. Hosts that load API 1.12 or newer need `config/recording_studio_api.yml`. Clients that read API list `meta.total_count` pass `include_total=true`.

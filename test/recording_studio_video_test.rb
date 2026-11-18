@@ -4,8 +4,13 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.4", ::RecordingStudioVideo::VERSION
+    assert_equal "0.6.5", ::RecordingStudioVideo::VERSION
     changelog = File.read(File.expand_path("../CHANGELOG.md", __dir__))
+    notes = changelog[changelog.index("## [0.6.5]")...changelog.index("## [0.6.4]")]
+    assert_includes notes, "auto_capability_actions: false"
+    assert_includes notes, "Trash, Restore, Purge, and List trash bin"
+    assert_includes changelog, "[0.6.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...v0.6.5"
+
     notes = changelog[changelog.index("## [0.6.4]")...changelog.index("## [0.6.3]")]
 
     assert_includes notes, "v7.7.1"
@@ -361,6 +366,8 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes readme, "parent_recording:"
     assert_includes readme, "Enter a supported video URL."
     assert_includes readme, "RecordingStudioVideo::Video"
+    assert_includes readme, "auto_capability_actions: false"
+    assert_includes readme, "capability actions are not auto-registered"
     refute_includes readme, "docs/gem_template"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
