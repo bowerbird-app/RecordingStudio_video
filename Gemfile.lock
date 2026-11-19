@@ -390,12 +390,12 @@ DEPENDENCIES
   pg (~> 1.1)
   puma
   recording_studio (~> 7.8)!
-  recording_studio_accessible!
-  recording_studio_cache!
-  recording_studio_external_embed!
-  recording_studio_metrics!
-  recording_studio_root_switchable!
-  recording_studio_trashable!
+  recording_studio_accessible (~> 0.56)!
+  recording_studio_cache (~> 0.8)!
+  recording_studio_external_embed (~> 0.7)!
+  recording_studio_metrics (~> 0.10)!
+  recording_studio_root_switchable (~> 0.16)!
+  recording_studio_trashable (~> 1.2)!
   recording_studio_video!
   rubocop
   rubocop-rails
