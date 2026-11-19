@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-19
+
+### Changed
+
+- Development and dummy Gemfiles pin Recording Studio `v7.8.0` (`~> 7.8`) and Flatpack `v0.2.0` (`~> 0.2`). Accessible is `v0.56.0`, Trashable `v1.2.3`, Cache `v0.8.0`, Metrics `v0.10.0`, External Embed `v0.7.0`, and Root Switchable `v0.16.1`. Dummy also pins API `v1.19.0`, Logs `v0.8.2`, Moveable `v6.0.3`, and Icons `v0.5.0`.
+- The dummy importmap drops the manual `flat_pack/heroicons` pin. `test/dummy/install_page.html` drops that pin and the `flat-pack--icon` controller.
+- The dummy app does not copy Recording Studio 7.4, 7.5, or 7.7 migrations. Gemspec floors stay `recording_studio >= 7.0`, `< 8.0` and `flat_pack >= 0.1.341`.
+
+### Upgrade notes
+
+- Bump to `0.7.0`. No migration from this gem. Hosts MUST run the Recording Studio 7.4, 7.5 and 7.7 migrations if they have not.
+- flat_pack 0.2.0 is supported; hosts moving to 0.2 must remove the manual `flat_pack/heroicons` importmap pin and any `flat-pack--icon` controller registration.
+- Compare [v0.6.5...v0.7.0](https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...v0.7.0).
+
 ## [0.6.5] - 2026-11-18
 
 ### Fixed
@@ -295,7 +309,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...v0.7.0
 [0.6.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.2...v0.6.3
