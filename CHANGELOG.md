@@ -10,6 +10,7 @@
 - `RecordingStudioVideo::Video.model_name` is namespaced (`ActiveModel::Name.new(self, RecordingStudioVideo)`). The form param key stays `video`. The i18n key is `recording_studio_video/video`.
 - The dummy test database default and CI Postgres database are `recording_studio_video_test`.
 - README documents the shipped External Embed catalog as YouTube and Vimeo.
+- Development Ruby is 3.3.14. Dummy lockfile patches puma to 8.1.2, net-ssh to 7.3.10, and brakeman to 8.1.1.
 
 ### Upgrade notes
 
