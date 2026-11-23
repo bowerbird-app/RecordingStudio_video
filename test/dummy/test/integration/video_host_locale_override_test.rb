@@ -10,8 +10,8 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   HOST_URL_LABEL = "HOST Video URL"
   HOST_URL_HINT = "HOST Paste a link to a supported video, such as YouTube."
   HOST_DESCRIPTION_LABEL = "HOST Description"
-  HOST_ENTER_SUPPORTED = "HOST Enter a supported video URL."
-  MAIN_ENTER_SUPPORTED = "Enter a supported video URL."
+  HOST_ENTER_SUPPORTED = "HOST must be a supported video URL"
+  MAIN_ENTER_SUPPORTED = "must be a supported video URL"
   TITLE_LABEL_KEY = "recording_studio.video.fields.title.label"
   URL_LABEL_KEY = "recording_studio.video.fields.url.label"
   URL_HINT_KEY = "recording_studio.video.fields.url.hint"
@@ -100,7 +100,7 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   # Test-only fixture on a fresh backend: I18n.t once to initialize, then
   # load_translations into that backend, assert HOST as a precondition, render.
   # Covers title, url label, url hint, description, and enter_supported so a
-  # literal revert of NotVideo#message fails.
+  # literal revert of the not-video Copy key fails.
   test "fresh-backend host fixture overrides gem english field and error copy" do
     assert File.exist?(FRESH_HOST_LOCALE), "expected test-only host override fixture at #{FRESH_HOST_LOCALE}"
     fixture = File.read(FRESH_HOST_LOCALE)
@@ -147,7 +147,7 @@ class VideoHostLocaleOverrideTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_equal [{ error: HOST_ENTER_SUPPORTED }], video.errors.details[:url]
+    assert_equal [{ error: :enter_supported }], video.errors.details[:url]
     assert_includes video.errors.full_messages.join(" "), HOST_ENTER_SUPPORTED
     assert_response :unprocessable_entity
     assert_includes response.body, HOST_ENTER_SUPPORTED

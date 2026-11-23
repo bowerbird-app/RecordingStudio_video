@@ -4,13 +4,7 @@ module RecordingStudioVideo
   module Playback
     CONTENT_TYPE = :video
 
-    class NotVideo
-      def message
-        # Main passed this English String as the errors.add type. Keep a String
-        # type (not a symbol): look up en.yml so :en stays byte-identical.
-        Copy.t("errors.url.enter_supported")
-      end
-    end
+    NotVideo = Class.new
     private_constant :CONTENT_TYPE, :NotVideo
 
     def self.accept(url)

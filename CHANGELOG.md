@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-11-23
+
+### Changed
+
+- URL validation adds Active Record symbols (`:unsupported`, `:malformed`, `:invalid`, `:enter_supported`) instead of External Embed sentence strings. Phrase-form English lives under `activerecord.errors.models.recording_studio_video/video.attributes.url`, so `errors.full_messages` reads as `Url is not from a supported provider` while `errors[:url]` stays usable on the form. Unresolved reasons still come from `ExternalEmbed::Unresolved#reason`.
+- `RecordingStudioVideo::Video.model_name` is namespaced (`ActiveModel::Name.new(self, RecordingStudioVideo)`). The form param key stays `video`. The i18n key is `recording_studio_video/video`.
+- The dummy test database default and CI Postgres database are `recording_studio_video_test`.
+- README documents the shipped External Embed catalog as YouTube and Vimeo.
+- Development Ruby is 3.3.14. Dummy lockfile patches puma to 8.1.2, net-ssh to 7.3.10, and brakeman to 8.1.1.
+
+### Upgrade notes
+
+- Bump to `0.7.1`. No migration. Clients that displayed `errors.full_messages` no longer see `Url That URL is not from a supported provider.` Form fields still read `errors[:url]`, now in phrase form (`is not from a supported provider`). Hosts that overrode `recording_studio.video.errors.url.enter_supported` should also override `activerecord.errors.models.recording_studio_video/video.attributes.url.enter_supported`.
+- Compare [v0.7.0...v0.7.1](https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...v0.7.1).
+
 ## [0.7.0] - 2026-11-19
 
 ### Changed
@@ -309,7 +324,8 @@ A host that has never installed this gem should do the following.
 
 The install generator does not mount a route. The host owns the form, the routes, and the buttons.
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...v0.7.0
 [0.6.5]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.3...v0.6.4

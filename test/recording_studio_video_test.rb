@@ -4,8 +4,15 @@ require "test_helper"
 
 class RecordingStudioVideoTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.7.0", ::RecordingStudioVideo::VERSION
+    assert_equal "0.7.1", ::RecordingStudioVideo::VERSION
     changelog = File.read(File.expand_path("../CHANGELOG.md", __dir__))
+    notes = changelog[changelog.index("## [0.7.1]")...changelog.index("## [0.7.0]")]
+    assert_includes notes, "errors.full_messages"
+    assert_includes notes, "recording_studio_video_test"
+    assert_includes notes, "YouTube and Vimeo"
+    assert_includes changelog, "[0.7.1]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...v0.7.1"
+    assert_includes changelog, "[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.1...HEAD"
+
     notes = changelog[changelog.index("## [0.7.0]")...changelog.index("## [0.6.5]")]
     assert_includes notes, "v7.8.0"
     assert_includes notes, "v0.2.0"
@@ -16,7 +23,6 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes notes, "must remove the manual `flat_pack/heroicons` importmap pin"
     assert_includes notes, "any `flat-pack--icon` controller registration"
     assert_includes changelog, "[0.7.0]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.6.5...v0.7.0"
-    assert_includes changelog, "[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_video/compare/v0.7.0...HEAD"
 
     notes = changelog[changelog.index("## [0.6.5]")...changelog.index("## [0.6.4]")]
     assert_includes notes, "auto_capability_actions: false"
@@ -379,7 +385,9 @@ class RecordingStudioVideoTest < Minitest::Test
     assert_includes readme, "recording_studio_video_player"
     assert_includes readme, "Videos.to"
     assert_includes readme, "parent_recording:"
-    assert_includes readme, "Enter a supported video URL."
+    assert_includes readme, "must be a supported video URL"
+    assert_includes readme, "YouTube and Vimeo"
+    assert_includes readme, "Url is not from a supported provider"
     assert_includes readme, "RecordingStudioVideo::Video"
     assert_includes readme, "auto_capability_actions: false"
     assert_includes readme, "capability actions are not auto-registered"
