@@ -11,4 +11,14 @@ en:
           label: "Description"
       errors:
         url:
-          enter_supported: "Enter a supported video URL."
+          enter_supported: &video_url_enter_supported "must be a supported video URL"
+  activerecord:
+    errors:
+      models:
+        recording_studio_video/video:
+          attributes:
+            url:
+              enter_supported: *video_url_enter_supported
+              unsupported: "is not from a supported provider"
+              malformed: "is missing a valid id"
+              invalid: "can't be embedded"

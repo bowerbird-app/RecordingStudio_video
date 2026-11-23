@@ -48,7 +48,7 @@ The install generator does not mount a route. The host owns the form, the routes
 
 Validation and the player both resolve the stored URL with `RecordingStudio::ExternalEmbed.resolve`. A stored URL is valid when that resolution returns an embed whose content type is video. That resolution is the only provider check in this gem.
 
-The shipped External Embed catalog is YouTube only. When External Embed adds another video provider, this gem keeps the same `url` column. No migration is required.
+The shipped External Embed catalog is YouTube and Vimeo. When External Embed adds another video provider, this gem keeps the same `url` column. No migration is required.
 
 ## Fields
 
@@ -58,7 +58,7 @@ Blank title and description are stored as nil. The URL is stripped and kept as e
 
 `provider`, `canonical_url`, and `content_type` are derived readers. They return strings or nil. They are not columns.
 
-The form param key is `video`, from `model_name` `Video`. The Recording Studio type string stays `RecordingStudioVideo::Video`.
+The form param key is `video`. The Recording Studio type string stays `RecordingStudioVideo::Video`. Error lookups use `model_name.i18n_key` `recording_studio_video/video`.
 
 ## Create a video
 
@@ -99,7 +99,7 @@ end
 
 The engine includes two helpers into Action Controller, the same way External Embed includes `recording_studio_external_embed`.
 
-`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]` (joined at render). Field labels, the URL hint, and this gem's not-video URL message resolve through `recording_studio.video.*` (`Copy`); English comes from `config/locales/en.yml` only (no English `default:`). Hosts override those keys in their own `config/locales`. External Embed provider messages stay that gem's English. This helper does not render the player.
+`recording_studio_video_fields(video)` renders Title, Video URL, and Description with Flatpack, with space between each field. The URL hint is `Paste a link to a supported video, such as YouTube.` URL errors use `video.errors[:url]` (joined at render). Field labels, the URL hint, and this gem's not-video Copy key resolve through `recording_studio.video.*` (`Copy`); English comes from `config/locales/en.yml` only (no English `default:`). Hosts override those keys in their own `config/locales`. URL validation uses Active Record symbols (`unsupported`, `malformed`, `invalid`, `enter_supported`) under `activerecord.errors.models.recording_studio_video/video.attributes.url`. Phrase-form messages so `errors.full_messages` reads naturally; `recording_studio_video_fields` still renders `video.errors[:url]`. This helper does not render the player.
 
 `recording_studio_video_player(subject)` accepts a `RecordingStudioVideo::Video` or a `RecordingStudio::Recording` whose recordable is a video. It renders that URL with `recording_studio_external_embed`. It does not build an iframe and it does not print the title. Anything else returns an empty HTML-safe string.
 
@@ -109,12 +109,12 @@ Put the player under the fields when `video.content_type` is `"video"`.
 
 `url` is required.
 
-| Case | `errors[:url]` |
-| --- | --- |
-| Blank | `can't be blank` |
-| Unsupported host | `That URL is not from a supported provider.` |
-| Malformed id | `That URL is missing a valid id.` |
-| URL that cannot be embedded | `That URL can't be embedded.` |
-| Resolved embed that is not a video | `Enter a supported video URL.` |
+| Case | `errors[:url]` | `errors.full_messages` |
+| --- | --- | --- |
+| Blank | `can't be blank` | `Url can't be blank` |
+| Unsupported host | `is not from a supported provider` | `Url is not from a supported provider` |
+| Malformed id | `is missing a valid id` | `Url is missing a valid id` |
+| URL that cannot be embedded | `can't be embedded` | `Url can't be embedded` |
+| Resolved embed that is not a video | `must be a supported video URL` | `Url must be a supported video URL` |
 
-Those provider messages come from External Embed. This gem does not keep a provider regex.
+Unresolved provider reasons come from External Embed (`result.reason`). This gem maps those symbols onto Active Record messages. This gem does not keep a provider regex. Hosts that override the not-video Copy key should also override `activerecord.errors.models.recording_studio_video/video.attributes.url.enter_supported`.

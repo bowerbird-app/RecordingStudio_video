@@ -5,7 +5,7 @@ module RecordingStudioVideo
     self.table_name = "recording_studio_videos"
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, "Video")
+      ActiveModel::Name.new(self, RecordingStudioVideo)
     end
 
     WRITABLE = %i[title url description].freeze
@@ -63,11 +63,13 @@ module RecordingStudioVideo
       result = accepted
       return if result.is_a?(RecordingStudio::ExternalEmbed::Embed)
 
-      errors.add(:url, url_message(result))
+      errors.add(:url, url_error_type(result))
     end
 
-    def url_message(result)
-      result.message
+    def url_error_type(result)
+      return result.reason if result.is_a?(RecordingStudio::ExternalEmbed::Unresolved)
+
+      :enter_supported
     end
   end
 

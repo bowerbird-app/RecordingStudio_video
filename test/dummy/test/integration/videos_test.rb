@@ -50,7 +50,7 @@ class VideosTest < ActionDispatch::IntegrationTest
     }
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "That URL is not from a supported provider."
+    assert_includes response.body, "is not from a supported provider"
     assert_includes response.body, "&lt;script&gt;alert(1)&lt;/script&gt;"
     assert_includes response.body, "&quot;&gt;&lt;img&gt;"
     refute_includes response.body, "<script>alert(1)</script>"

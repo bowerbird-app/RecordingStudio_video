@@ -8,8 +8,8 @@ require "devise/test/integration_helpers"
 class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
-  HOST_ENTER_SUPPORTED = "HOST Enter a supported video URL."
-  MAIN_ENTER_SUPPORTED = "Enter a supported video URL."
+  HOST_ENTER_SUPPORTED = "HOST must be a supported video URL"
+  MAIN_ENTER_SUPPORTED = "must be a supported video URL"
 
   setup do
     @user = User.find_or_create_by!(email: "wave2-i18n@example.com") do |record|
@@ -55,7 +55,7 @@ class VideoWave2I18nRenderTest < ActionDispatch::IntegrationTest
     }
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "That URL is not from a supported provider."
+    assert_includes response.body, "is not from a supported provider"
     assert_includes response.body, "Video URL"
   end
 

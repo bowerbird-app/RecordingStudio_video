@@ -14,4 +14,11 @@ en:
           label: "HOST Description"
       errors:
         url:
-          enter_supported: "HOST Enter a supported video URL."
+          enter_supported: &host_enter_supported "HOST must be a supported video URL"
+  activerecord:
+    errors:
+      models:
+        recording_studio_video/video:
+          attributes:
+            url:
+              enter_supported: *host_enter_supported

@@ -25,6 +25,7 @@ class VideoRecordableTest < ActiveSupport::TestCase
     assert_equal "Videos", declaration.plural_label
     assert_raises(NameError) { RecordingStudioVideo::Playback }
     assert_equal "video", RecordingStudioVideo::Video.model_name.param_key
+    assert_equal :"recording_studio_video/video", RecordingStudioVideo::Video.model_name.i18n_key
     assert_equal "RecordingStudioVideo::Video", RecordingStudioVideo::Video.name
   end
 
@@ -90,14 +91,27 @@ class VideoRecordableTest < ActiveSupport::TestCase
     video = RecordingStudioVideo::Video.new(url: "https://example.com/watch/123")
 
     refute video.valid?
-    assert_equal ["That URL is not from a supported provider."], video.errors[:url]
+    assert_equal ["is not from a supported provider"], video.errors[:url]
+    assert_equal [{ error: :unsupported }], video.errors.details[:url]
+    assert_equal ["Url is not from a supported provider"], video.errors.full_messages
   end
 
   test "a malformed youtube url is invalid with the external embed message" do
     video = RecordingStudioVideo::Video.new(url: "https://www.youtube.com/watch?v=short")
 
     refute video.valid?
-    assert_equal ["That URL is missing a valid id."], video.errors[:url]
+    assert_equal ["is missing a valid id"], video.errors[:url]
+    assert_equal [{ error: :malformed }], video.errors.details[:url]
+    assert_equal ["Url is missing a valid id"], video.errors.full_messages
+  end
+
+  test "a url that cannot be parsed is invalid with the embed invalid reason" do
+    video = RecordingStudioVideo::Video.new(url: "https://www.youtube.com:443/watch?v=jNQXAC9IVRw")
+
+    refute video.valid?
+    assert_equal ["can't be embedded"], video.errors[:url]
+    assert_equal [{ error: :invalid }], video.errors.details[:url]
+    assert_equal ["Url can't be embedded"], video.errors.full_messages
   end
 
   test "a vimeo url is valid through external embed" do
@@ -129,8 +143,9 @@ class VideoRecordableTest < ActiveSupport::TestCase
         html = VideoPlayerHelperTest::View.new.recording_studio_video_player(video)
       end
 
-      assert_equal ["Enter a supported video URL."], video.errors[:url]
-      assert_equal [{ error: "Enter a supported video URL." }], video.errors.details[:url]
+      assert_equal ["must be a supported video URL"], video.errors[:url]
+      assert_equal [{ error: :enter_supported }], video.errors.details[:url]
+      assert_equal ["Url must be a supported video URL"], video.errors.full_messages
       assert_equal "", html
       assert_predicate html, :html_safe?
     end
@@ -143,8 +158,9 @@ class VideoRecordableTest < ActiveSupport::TestCase
       refute video.valid?
     end
 
-    assert_equal ["HOST Enter a supported video URL."], video.errors[:url]
-    assert_equal [{ error: "HOST Enter a supported video URL." }], video.errors.details[:url]
+    assert_equal ["HOST must be a supported video URL"], video.errors[:url]
+    assert_equal [{ error: :enter_supported }], video.errors.details[:url]
+    assert_equal ["Url HOST must be a supported video URL"], video.errors.full_messages
   end
 
   test "a resolved non-video embed carries translated details under french locale" do
@@ -317,7 +333,16 @@ class VideoRecordableTest < ActiveSupport::TestCase
       previous_locales = I18n.available_locales
       I18n.backend.store_translations(
         :fr,
-        recording_studio: { video: { errors: { url: { enter_supported: french } } } }
+        recording_studio: { video: { errors: { url: { enter_supported: french } } } },
+        activerecord: {
+          errors: {
+            models: {
+              "recording_studio_video/video" => {
+                attributes: { url: { enter_supported: french } }
+              }
+            }
+          }
+        }
       )
       I18n.available_locales = Array(previous_locales) | [:fr]
       yield
@@ -331,7 +356,8 @@ class VideoRecordableTest < ActiveSupport::TestCase
     video = RecordingStudioVideo::Video.new(url: "https://gallery.test/items/photo1")
     I18n.with_locale(:fr) do
       RecordingStudio::ExternalEmbed.with_providers(provider) { refute video.valid? }
-      assert_equal [{ error: message }], video.errors.details[:url]
+      assert_equal [{ error: :enter_supported }], video.errors.details[:url]
+      assert_equal [message], video.errors[:url]
       assert_includes video.errors.full_messages.join(" "), message
     end
   end

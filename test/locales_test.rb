@@ -11,7 +11,7 @@ class LocalesTest < Minitest::Test
     "fields.url.label" => "Video URL",
     "fields.url.hint" => "Paste a link to a supported video, such as YouTube.",
     "fields.description.label" => "Description",
-    "errors.url.enter_supported" => "Enter a supported video URL."
+    "errors.url.enter_supported" => "must be a supported video URL"
   }.freeze
 
   def test_engine_ships_only_english_locale_files
@@ -68,6 +68,21 @@ class LocalesTest < Minitest::Test
         end
       end
     end
+  end
+
+  def test_url_validation_messages_live_under_the_video_activerecord_model
+    tree = locale_tree(File.join(engine_locales_dir, "en.yml"), "en")
+           .fetch("activerecord")
+           .fetch("errors")
+           .fetch("models")
+           .fetch("recording_studio_video/video")
+           .fetch("attributes")
+           .fetch("url")
+
+    assert_equal "must be a supported video URL", tree.fetch("enter_supported")
+    assert_equal "is not from a supported provider", tree.fetch("unsupported")
+    assert_equal "is missing a valid id", tree.fetch("malformed")
+    assert_equal "can't be embedded", tree.fetch("invalid")
   end
 
   def test_en_yml_nests_keys_under_recording_studio_video
@@ -132,7 +147,7 @@ class LocalesTest < Minitest::Test
       recording_studio: {
         video: {
           fields: { url: { label: "URL de la vidéo" } },
-          errors: { url: { enter_supported: "Saisissez une URL vidéo prise en charge." } }
+          errors: { url: { enter_supported: "doit être une URL vidéo prise en charge" } }
         }
       }
     )
@@ -141,12 +156,12 @@ class LocalesTest < Minitest::Test
     I18n.available_locales = Array(previous_locales) | [:fr]
     I18n.with_locale(:fr) do
       assert_equal "URL de la vidéo", Copy.field_label(:url)
-      assert_equal "Saisissez une URL vidéo prise en charge.",
+      assert_equal "doit être une URL vidéo prise en charge",
                    Copy.t("errors.url.enter_supported")
     end
     I18n.with_locale(:en) do
       assert_equal "Video URL", Copy.field_label(:url)
-      assert_equal "Enter a supported video URL.",
+      assert_equal "must be a supported video URL",
                    Copy.t("errors.url.enter_supported")
     end
   ensure
